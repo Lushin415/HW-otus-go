@@ -9,20 +9,20 @@ func main() {
 	fmt.Print("Введите количество столбцов доски: ")
 	fmt.Scanln(&columns)
 
-	var board [100][100]string
+	board := make([][]rune, rows)
+	for i := range board {
+		board[i] = make([]rune, columns)
+	}
 	for i := 0; i < rows; i++ {
 		for j := 0; j < columns; j++ {
 			if (i+j)%2 == 0 {
-				board[i][j] = " "
+				board[i][j] = ' '
 			} else {
-				board[i][j] = "#"
+				board[i][j] = '#'
 			}
-		}
-	}
-	for i := 0; i < rows; i++ {
-		for j := 0; j < columns; j++ {
-			fmt.Printf("%s ", board[i][j])
+			fmt.Print(string(board[i][j]))
 		}
 		fmt.Println()
 	}
+
 }
