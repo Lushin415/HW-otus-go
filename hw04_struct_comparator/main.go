@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 
+// Book Структура с неэкспортируемыми полями.
 type Book struct {
 	id     int
 	title  string
@@ -11,64 +12,72 @@ type Book struct {
 	rate   float64
 }
 
+// GetID Методы для получения полей структуры Book.
+func (b *Book) GetID() int {
+	return b.id
+}
+
+func (b *Book) GetTitle() string {
+	return b.title
+}
+
+func (b *Book) GetAuthor() string {
+	return b.author
+}
+
+func (b *Book) GetYear() int {
+	return b.year
+}
+
+func (b *Book) GetSize() int {
+	return b.size
+}
+
+func (b *Book) GetRate() float64 {
+	return b.rate
+}
+
+// PoWhat сравнить "По" (году, размеру, рейтингу).
+type PoWhat int
+
 const (
-	idField = iota
-	titleField
-	authorField
-	yearField
-	sizeField
-	rateField
+	PoYear PoWhat = iota
+	PoSize
+	PoRate
 )
 
-type Field int
+// Comparator структура для хранения сравнения.
+type Comparator struct {
+	fieldCompare PoWhat
+}
 
-func (b *Book) CompareField(o Book, f Field) bool {
-	switch f {
-	case idField:
-		return b.id > o.id
-	case titleField:
-		return b.title > o.title
-	case authorField:
-		return b.author > o.author
-	case yearField:
-		return b.year > o.year
-	case sizeField:
-		return b.size > o.size
-	case rateField:
-		return b.rate > o.rate
+// NewComparator новый компаратор с сравнением.
+func NewComparator(fieldCompare PoWhat) *Comparator {
+	return &Comparator{fieldCompare}
+}
+
+// Compare для сравнения книг.
+func (c *Comparator) Compare(bookOne, bookTwo *Book) bool {
+	switch c.fieldCompare {
+	case PoYear:
+		return bookOne.GetYear() > bookTwo.GetYear()
+	case PoSize:
+		return bookOne.GetSize() > bookTwo.GetSize()
+	case PoRate:
+		return bookOne.GetRate() > bookTwo.GetRate()
 	default:
 		return false
 	}
 }
-func (b *Book) GetBook() string {
-	return fmt.Sprintf("ID: %d, Title: %s, Author: %s, Year: %d, Size: %d, Rate: %.1f", b.id, b.title, b.author, b.year, b.size, b.rate)
-}
 
 func main() {
-	b1 := Book{
-		id:     100,
-		title:  "First",
-		author: "Sasha",
-		year:   2024,
-		size:   55,
-		rate:   4.8}
-	details := b1.GetBook()
-	fmt.Println(details)
-
-	b2 := Book{
-		id:     150,
-		title:  "Second",
-		author: "Alexandr",
-		year:   2023,
-		size:   45,
-		rate:   3.2}
-	details = b2.GetBook()
-	fmt.Println(details)
-
-	fields := []Field{idField, titleField, authorField, yearField, sizeField, rateField}
-	for _, f := range fields {
-		result := b1.CompareField(b2, f)
-		fmt.Printf("Сравнение книги 1 и книги 2 %d: %v\n", f, result)
-	}
-
+	book1 := &Book{id: 1, title: "FirstBook", author: "Alexandr", year: 1993, size: 350, rate: 4.9}
+	book2 := &Book{id: 2, title: "SecondBook", author: "Lushin", year: 2024, size: 600, rate: 2.1}
+	// Создаем компаратор для сравнения по году
+	yCompare := NewComparator(PoYear)
+	fmt.Println("Книга № 1 больше чем Книга 2 по году:", yCompare.Compare(book1, book2))
+	sCompare := NewComparator(PoSize)
+	fmt.Println("Книга № 1 больше чем Книга 2 по размеру:", sCompare.Compare(book1, book2))
+	rCompare := NewComparator(PoRate)
+	fmt.Println("Книга № 1 больше чем Книга 2 по рейтингу:", rCompare.Compare(book1, book2))
 }
