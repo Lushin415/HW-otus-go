@@ -12,29 +12,55 @@ type Book struct {
 	rate   float64
 }
 
-// GetID Методы для получения полей структуры Book.
-func (b *Book) GetID() int {
+// ID геттеры для получения полей структуры.
+func (b *Book) ID() int {
 	return b.id
 }
 
-func (b *Book) GetTitle() string {
+func (b *Book) Title() string {
 	return b.title
 }
 
-func (b *Book) GetAuthor() string {
+func (b *Book) Author() string {
 	return b.author
 }
 
-func (b *Book) GetYear() int {
+func (b *Book) Year() int {
 	return b.year
 }
 
-func (b *Book) GetSize() int {
+func (b *Book) Size() int {
 	return b.size
 }
 
-func (b *Book) GetRate() float64 {
+func (b *Book) Rate() float64 {
 	return b.rate
+}
+
+// Сеттеры для получения полей структуры Book.
+
+func (b *Book) SetID(id int) {
+	b.id = id
+}
+
+func (b *Book) SetTitle(title string) {
+	b.title = title
+}
+
+func (b *Book) SetAuthor(author string) {
+	b.author = author
+}
+
+func (b *Book) SetYear(year int) {
+	b.year = year
+}
+
+func (b *Book) SetSize(size int) {
+	b.size = size
+}
+
+func (b *Book) SetRate(rate float64) {
+	b.rate = rate
 }
 
 // PoWhat сравнить "По" (году, размеру, рейтингу).
@@ -60,11 +86,11 @@ func NewComparator(fieldCompare PoWhat) *Comparator {
 func (c *Comparator) Compare(bookOne, bookTwo *Book) bool {
 	switch c.fieldCompare {
 	case PoYear:
-		return bookOne.GetYear() > bookTwo.GetYear()
+		return bookOne.Year() > bookTwo.Year()
 	case PoSize:
-		return bookOne.GetSize() > bookTwo.GetSize()
+		return bookOne.Size() > bookTwo.Size()
 	case PoRate:
-		return bookOne.GetRate() > bookTwo.GetRate()
+		return bookOne.Rate() > bookTwo.Rate()
 	default:
 		return false
 	}
