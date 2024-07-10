@@ -5,9 +5,9 @@ import "fmt"
 func main() {
 	var rows, columns int
 	fmt.Print("Введите количество строк доски: ")
-	fmt.Scanln(&rows)
+	fmt.Scan(&rows)
 	fmt.Print("Введите количество столбцов доски: ")
-	fmt.Scanln(&columns)
+	fmt.Scan(&columns)
 
 	board := make([][]rune, rows)
 	for i := range board {
@@ -24,5 +24,4 @@ func main() {
 		}
 		fmt.Println()
 	}
-
 }
