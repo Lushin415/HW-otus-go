@@ -19,7 +19,7 @@ func ReadJSON(filePath string) ([]types.Employee, error) {
 	bytes, err := io.ReadAll(f)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
-		return nil, nil
+		return nil, err
 	}
 
 	var data []types.Employee

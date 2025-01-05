@@ -1,4 +1,4 @@
-module github.com/HW-otus-go/hw02_fix_app
+module github.com/Lushin415/HW-otus-go/hw02_fix_app
 
 go 1.20
 
