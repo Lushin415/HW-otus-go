@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/HW-otus-go/hw02_fix_app/printer"
-	"github.com/HW-otus-go/hw02_fix_app/reader"
+	"github.com/Lushin415/HW-otus-go/hw02_fix_app/printer"
+	"github.com/Lushin415/HW-otus-go/hw02_fix_app/reader"
 )
 
 func main() {
