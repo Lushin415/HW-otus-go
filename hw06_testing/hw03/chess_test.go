@@ -1,6 +1,7 @@
 package chess_test
 
 import (
+	chess "HW-otus/hw06_testing/hw03"
 	"testing"
 )
 
@@ -17,9 +18,9 @@ func TestBoardSize(t *testing.T) {
 
 	for _, size := range tests {
 		t.Run("", func(t *testing.T) {
-			result := logic.Chessboard(size.rows, size.columns)
+			result := chess.Chessboard(size.rows, size.columns)
 			if result != size.want {
-				t.Errorf("size %d: expected %q, got %q", size.rows, size.columns, size.want, result)
+				t.Errorf("size %dx%d: expected %q, got %q", size.rows, size.columns, size.want, result)
 			}
 		})
 	}

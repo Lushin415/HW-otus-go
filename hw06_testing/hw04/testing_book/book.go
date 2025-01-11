@@ -1,4 +1,4 @@
-package comparator
+package book
 
 // Book Структура с неэкспортируемыми полями.
 type Book struct {
@@ -8,6 +8,17 @@ type Book struct {
 	year   int
 	size   int
 	rate   float64
+}
+
+func NewBook(id int, title, author string, year, size int, rate float64) *Book {
+	return &Book{
+		id:     id,
+		title:  title,
+		author: author,
+		year:   year,
+		size:   size,
+		rate:   rate,
+	}
 }
 
 // ID геттеры для получения полей структуры.
@@ -59,37 +70,4 @@ func (b *Book) SetSize(size int) {
 
 func (b *Book) SetRate(rate float64) {
 	b.rate = rate
-}
-
-// PoWhat сравнить "По" (году, размеру, рейтингу).
-type PoWhat int
-
-const (
-	PoYear PoWhat = iota
-	PoSize
-	PoRate
-)
-
-// Comparator структура для хранения сравнения.
-type Comparator struct {
-	fieldCompare PoWhat
-}
-
-// NewComparator новый компаратор с сравнением.
-func NewComparator(fieldCompare PoWhat) *Comparator {
-	return &Comparator{fieldCompare}
-}
-
-// Compare для сравнения книг.
-func (c *Comparator) Compare(bookOne, bookTwo *Book) bool {
-	switch c.fieldCompare {
-	case PoYear:
-		return bookOne.Year() > bookTwo.Year()
-	case PoSize:
-		return bookOne.Size() > bookTwo.Size()
-	case PoRate:
-		return bookOne.Rate() > bookTwo.Rate()
-	default:
-		return false
-	}
 }

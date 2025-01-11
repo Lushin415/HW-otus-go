@@ -1,4 +1,4 @@
-module
+module HW-otus/hw06_testing
 
 go 1.20
 
