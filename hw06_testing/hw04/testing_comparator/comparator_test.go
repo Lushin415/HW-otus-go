@@ -1,10 +1,11 @@
 package comparator_test
 
 import (
+	"testing"
+
 	book "HW-otus/hw06_testing/hw04/testing_book"
 	comparator "HW-otus/hw06_testing/hw04/testing_comparator"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestComparator(t *testing.T) {

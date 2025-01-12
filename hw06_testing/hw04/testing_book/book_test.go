@@ -1,10 +1,10 @@
 package book_test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 
 	book "HW-otus/hw06_testing/hw04/testing_book"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBookMethods(t *testing.T) {
