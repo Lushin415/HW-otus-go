@@ -15,17 +15,17 @@ func TestComparator(t *testing.T) {
 
 	// Сравнение по году
 	yearComparator := comparator.NewComparator(comparator.PoYear)
-	assert.True(t, yearComparator.Compare(*bookTwo, *bookOne), "BookTwo should be after BookOne by Year")
+	assert.True(t, yearComparator.Compare(*bookTwo, *bookOne), "BookTwo должна быть больше BookOne по году")
 
 	// Сравнение по размеру
 	sizeComparator := comparator.NewComparator(comparator.PoSize)
-	assert.True(t, sizeComparator.Compare(*bookTwo, *bookOne), "BookTwo should be after BookOne by Size")
+	assert.True(t, sizeComparator.Compare(*bookTwo, *bookOne), "BookTwo должна быть больше BookOne по размеру")
 
 	// Сравнение по рейтингу
 	rateComparator := comparator.NewComparator(comparator.PoRate)
-	assert.True(t, rateComparator.Compare(*bookTwo, *bookOne), "BookTwo should be after BookOne by Rate")
+	assert.True(t, rateComparator.Compare(*bookTwo, *bookOne), "BookTwo должна быть больше BookOne по рейтингу")
 
 	// Сравнение с неверным значением (по умолчанию)
 	invalidComparator := comparator.NewComparator(100) // Передаем некорректное значение
-	assert.False(t, invalidComparator.Compare(*bookOne, *bookTwo), "Comparison with invalid field should return false")
+	assert.False(t, invalidComparator.Compare(*bookOne, *bookTwo), "Сравнение с некорректным значением должно вернуть false")
 }
