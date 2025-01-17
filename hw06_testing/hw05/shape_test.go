@@ -5,7 +5,7 @@ import (
 	"math"
 	"testing"
 
-	calculateshape "HW-otus/hw06_testing/hw05"
+	calculateshape "github.com/Lushin415/HW-otus-go/06_testing/hw05"
 )
 
 func TestCalculateArea(t *testing.T) {

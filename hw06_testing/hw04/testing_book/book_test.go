@@ -3,7 +3,7 @@ package book_test
 import (
 	"testing"
 
-	book "HW-otus/hw06_testing/hw04/testing_book"
+	book "github.com/Lushin415/HW-otus-go/06_testing/hw04/testing_book"
 	"github.com/stretchr/testify/assert"
 )
 

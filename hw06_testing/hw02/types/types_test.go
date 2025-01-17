@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"HW-otus/hw06_testing/hw02/types"
+	"github.com/Lushin415/HW-otus-go/06_testing/hw02/types"
 	"github.com/stretchr/testify/assert"
 )
 

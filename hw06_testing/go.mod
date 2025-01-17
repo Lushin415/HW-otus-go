@@ -1,4 +1,4 @@
-module HW-otus/hw06_testing
+module github.com/Lushin415/HW-otus-go/06_testing
 
 go 1.20
 

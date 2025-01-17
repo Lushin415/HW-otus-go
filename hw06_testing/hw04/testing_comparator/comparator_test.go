@@ -3,8 +3,8 @@ package comparator_test
 import (
 	"testing"
 
-	book "HW-otus/hw06_testing/hw04/testing_book"
-	comparator "HW-otus/hw06_testing/hw04/testing_comparator"
+	book "github.com/Lushin415/HW-otus-go/06_testing/hw04/testing_book"
+	comparator "github.com/Lushin415/HW-otus-go/06_testing/hw04/testing_comparator"
 	"github.com/stretchr/testify/assert"
 )
 

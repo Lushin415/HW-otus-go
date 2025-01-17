@@ -3,7 +3,7 @@ package printer
 import (
 	"fmt"
 
-	"HW-otus/hw06_testing/hw02/types"
+	"github.com/Lushin415/HW-otus-go/06_testing/hw02/types"
 )
 
 func PrintStaff(staff []types.Employee) {

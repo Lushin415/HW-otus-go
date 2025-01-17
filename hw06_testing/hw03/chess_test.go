@@ -3,7 +3,7 @@ package chess_test
 import (
 	"testing"
 
-	chess "HW-otus/hw06_testing/hw03"
+	chess "github.com/Lushin415/HW-otus-go/06_testing/hw03"
 )
 
 func TestBoardSize(t *testing.T) {
