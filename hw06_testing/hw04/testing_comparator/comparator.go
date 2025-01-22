@@ -1,6 +1,6 @@
 package comparator
 
-import book "HW-otus/hw06_testing/hw04/testing_book"
+import book "github.com/Lushin415/HW-otus-go/06_testing/hw04/testing_book"
 
 // PoWhat сравнить "По" (году, размеру, рейтингу).
 type PoWhat int
