@@ -29,5 +29,4 @@ func TestSerializationXML(t *testing.T) {
 			t.Fatalf("Deserialized XML does not match original: got %v, want %v", deserializedBooks, books)
 		}
 	})
-
 }

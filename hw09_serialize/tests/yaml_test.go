@@ -29,5 +29,4 @@ func TestSerializationYAML(t *testing.T) {
 			t.Fatalf("Deserialized YAML does not match original: got %v, want %v", deserializedBooks, books)
 		}
 	})
-
 }
