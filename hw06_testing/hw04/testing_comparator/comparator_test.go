@@ -27,5 +27,6 @@ func TestComparator(t *testing.T) {
 
 	// Сравнение с неверным значением (по умолчанию)
 	invalidComparator := comparator.NewComparator(100) // Передаем некорректное значение
-	assert.False(t, invalidComparator.Compare(*bookOne, *bookTwo), "Сравнение с некорректным значением должно вернуть false")
+	assert.False(t, invalidComparator.Compare(*bookOne, *bookTwo),
+		"Сравнение с некорректным значением должно вернуть false")
 }
