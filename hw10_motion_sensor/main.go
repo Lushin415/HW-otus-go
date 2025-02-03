@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	numChan := sensor.ReadChan(sensor.RandomGenerator)
 	dataChan := make(chan float64)
 

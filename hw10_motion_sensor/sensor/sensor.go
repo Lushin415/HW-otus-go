@@ -21,12 +21,20 @@ func RandomGenerator() int {
 
 func ReadChan(generator func() int) <-chan int {
 	c := make(chan int)
+
 	go func() {
 		defer close(c)
-		for i := 0; i < 60; i++ {
-			c <- generator()
-			time.Sleep(time.Second)
+		stop := time.After(1 * time.Minute)
+
+		for {
+			select {
+			case c <- generator():
+				time.Sleep(500 * time.Millisecond)
+			case <-stop:
+				return
+			}
 		}
 	}()
+
 	return c
 }
