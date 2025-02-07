@@ -1,11 +1,11 @@
-package analyzLog_test
+package analyzlog_test
 
 import (
 	"os"
 	"strings"
 	"testing"
 
-	"github.com/HW-otus-go/Lushin415/hw12_log_util/analyzLog"
+	"github.com/HW-otus-go/Lushin415/hw12_log_util/analyzlog"
 )
 
 func TestAnalyzeLog(t *testing.T) {
@@ -21,7 +21,7 @@ func TestAnalyzeLog(t *testing.T) {
 		{"time=2025-02-06T12:38:00.136+08:00 message=\"No level\"", ""},
 	}
 	for _, tt := range tests {
-		result := analyzLog.AnalyzeLog(tt.input)
+		result := analyzlog.AnalyzeLog(tt.input)
 		if result != tt.expected {
 			t.Errorf("AnalyzeLog(\"%s\") = \"%s\"; expected \"%s\"", tt.input, result, tt.expected)
 		}
@@ -56,7 +56,7 @@ func TestScanLog(t *testing.T) {
 	outputPath := "out.txt"
 	logLevel := ""
 
-	analyzLog.ScanLog(inputPath, outputPath, logLevel)
+	analyzlog.ScanLog(inputPath, outputPath, logLevel)
 
 	outData, err := os.ReadFile(outputPath)
 	if err != nil {

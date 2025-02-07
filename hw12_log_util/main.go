@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/HW-otus-go/Lushin415/hw12_log_util/analyzLog"
+	"github.com/HW-otus-go/Lushin415/hw12_log_util/analyzlog"
 	"github.com/HW-otus-go/Lushin415/hw12_log_util/createlog"
 	"github.com/joho/godotenv"
 	"github.com/spf13/pflag"
@@ -49,5 +49,5 @@ func main() {
 	fmt.Println("Уровень логов:", *levelPFlag)
 	fmt.Println("Файл вывода:", *outputPFlag)
 
-	analyzLog.ScanLog(*filePFlag, *outputPFlag, *levelPFlag)
+	analyzlog.ScanLog(*filePFlag, *outputPFlag, *levelPFlag)
 }

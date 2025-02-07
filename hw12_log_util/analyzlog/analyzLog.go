@@ -1,4 +1,4 @@
-package analyzLog
+package analyzlog
 
 import (
 	"bufio"
@@ -56,12 +56,12 @@ func ScanLog(filePath, outputPath, logLevel string) {
 			counter.Other++
 		}
 	}
-	if err := scanner.Err(); err != nil {
-		fmt.Println("Ошибка чтения файла:", err)
+	if scanErr := scanner.Err(); scanErr != nil {
+		fmt.Println("Ошибка чтения файла:", scanErr)
 		return
 	}
 
-	outFile, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY, 0644)
+	outFile, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		panic("Ошибка при открытии файла out.txt: " + err.Error())
 	}
