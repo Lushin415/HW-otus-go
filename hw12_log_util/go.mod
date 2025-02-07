@@ -1,3 +1,8 @@
-module github.com/fixme_my_friend/hw12_log_util
+module github.com/HW-otus-go/Lushin415/hw12_log_util
 
 go 1.20
+
+require (
+	github.com/joho/godotenv v1.5.1
+	github.com/spf13/pflag v1.0.6
+)
