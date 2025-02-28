@@ -1,3 +1,3 @@
-module github.com/fixme_my_friend/hw13_http
+module github.com/hw-otus-go/Lushin415/hw13_http
 
 go 1.20
