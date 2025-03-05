@@ -1,17 +1,26 @@
 package client
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func Klient() {
-	resp, err := http.Get(
-		"http://localhost:8080/v1/get_user",
-	)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://localhost:8080/v1/get_user", nil)
+	if err != nil {
+		fmt.Println("Ошибка создания запроса", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("Ошибка запроса", err)
 		return
@@ -39,17 +48,22 @@ func Klient() {
 		return
 	}
 
-	fmt.Printf("User: %+v\n", user)
+	fmt.Printf("Пользователь: %+v\n", user)
 
-	resp, err = http.Post(
-		"http://localhost:8080/v1/create_user",
-		"application/json",
-		strings.NewReader(user.String()),
-	)
+	req, err = http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:8080/v1/create_user",
+		strings.NewReader(user.String()))
+	if err != nil {
+		fmt.Println("Ошибка создания запроса", err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err = http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("Ошибка запроса", err)
 		return
 	}
+
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated {
@@ -57,7 +71,7 @@ func Klient() {
 		return
 	}
 
-	fmt.Println("User created successfully")
+	fmt.Println("Пользователь создан успешно")
 
 	body, err = io.ReadAll(resp.Body)
 	if err != nil {
@@ -73,7 +87,7 @@ func Klient() {
 		return
 	}
 
-	fmt.Printf("User: %+v\n", newUser)
+	fmt.Printf("Пользователь: %+v\n", newUser)
 }
 
 type User struct {

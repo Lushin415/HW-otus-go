@@ -4,16 +4,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 func Server(ip, port string) {
-	println("Server starting on", ip+":"+port)
+	println("Сервер запущен", ip+":"+port)
 
 	http.HandleFunc("/v1/hello", hello)
 	http.HandleFunc("/v1/get_user", getUser)
 	http.HandleFunc("/v1/create_user", createUser)
 
-	err := http.ListenAndServe(ip+":"+port, nil)
+	server := &http.Server{
+		Addr:         ip + ":" + port,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+
+	err := server.ListenAndServe()
 	if err != nil {
 		fmt.Printf("Server error: %v\n", err)
 	}
@@ -33,8 +41,8 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 
 	user := User{
 		ID:   1,
-		Name: "John Doe",
-		Age:  30,
+		Name: "Александр Лушин",
+		Age:  32,
 	}
 
 	json.NewEncoder(w).Encode(user)
@@ -61,7 +69,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("New user: %+v\n", newUser)
+	fmt.Printf("Новый пользователь: %+v\n", newUser)
 
 	w.WriteHeader(http.StatusCreated)
 
