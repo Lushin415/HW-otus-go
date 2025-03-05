@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"time"
+
 	"github.com/hw-otus-go/Lushin415/hw13_http/client"
 	"github.com/hw-otus-go/Lushin415/hw13_http/server"
-	"time"
 )
 
 func main() {
