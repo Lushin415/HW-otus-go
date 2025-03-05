@@ -37,7 +37,6 @@ linters:
     - durationcheck
     - errorlint
     - exhaustive
-    - exportloopref
     - funlen
     - gci
     - gocognit
@@ -73,4 +72,3 @@ linters:
     - unparam
     - unused
     - whitespace
-    - exportloopref
