@@ -28,7 +28,6 @@ func main() {
 		if os.Getenv("LOG_ANALYZER_FILE") == "" &&
 			os.Getenv("LOG_ANALYZER_LEVEL") == "" &&
 			os.Getenv("LOG_ANALYZER_OUTPUT") == "" {
-
 			createlog.CreateLog()
 
 			defaultLogPath := "logs.log"
