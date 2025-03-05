@@ -18,9 +18,23 @@ func main() {
 
 	pflag.Parse()
 
-	if *filePFlag == "" || *levelPFlag == "" || *outputPFlag == "" {
+	// Проверяем, что все флаги пустые
+	if *filePFlag == "" && *levelPFlag == "" && *outputPFlag == "" {
+		// Загружаем .env, но без panic
 		if err := godotenv.Load(".env"); err != nil {
 			log.Printf("Не удалось загрузить .env: %v", err)
+		}
+
+		if os.Getenv("LOG_ANALYZER_FILE") == "" &&
+			os.Getenv("LOG_ANALYZER_LEVEL") == "" &&
+			os.Getenv("LOG_ANALYZER_OUTPUT") == "" {
+
+			createlog.CreateLog()
+
+			defaultLogPath := "logs.log"
+
+			analyzlog.ScanLog(defaultLogPath, "", "")
+			return
 		}
 	}
 
@@ -34,20 +48,15 @@ func main() {
 		*outputPFlag = os.Getenv("LOG_ANALYZER_OUTPUT")
 	}
 
-	if *filePFlag == "" || *outputPFlag == "" {
-		log.Fatal("Необходимо указать --file и --output либо задать их в .env")
-	}
 	createlog.CreateLog()
-	file, errOpen := os.Open(*filePFlag)
-	if errOpen != nil {
-		fmt.Printf("Ошибка открытия файла %s: %v\n", *filePFlag, errOpen)
+
+	if *filePFlag == "" {
+		*filePFlag = "logs.log"
 	}
 
-	file.Close()
+	analyzlog.ScanLog(*filePFlag, *outputPFlag, *levelPFlag)
 
 	fmt.Println("Файл логов:", *filePFlag)
 	fmt.Println("Уровень логов:", *levelPFlag)
 	fmt.Println("Файл вывода:", *outputPFlag)
-
-	analyzlog.ScanLog(*filePFlag, *outputPFlag, *levelPFlag)
 }

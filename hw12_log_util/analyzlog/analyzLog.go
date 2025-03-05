@@ -61,6 +61,16 @@ func ScanLog(filePath, outputPath, logLevel string) {
 		return
 	}
 
+	if outputPath == "" {
+		fmt.Println("Статистика логов:")
+		fmt.Printf("INFO: %d\n", counter.Info)
+		fmt.Printf("ERROR: %d\n", counter.Error)
+		fmt.Printf("WARN: %d\n", counter.Warn)
+		fmt.Printf("DEBUG: %d\n", counter.Debug)
+		fmt.Printf("Other: %d\n", counter.Other)
+		return
+	}
+
 	outFile, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		panic("Ошибка при открытии файла out.txt: " + err.Error())
