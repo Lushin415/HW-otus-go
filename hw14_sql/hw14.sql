@@ -119,3 +119,8 @@ FROM schema.Users u
          LEFT JOIN schema.Order_Products op ON o.id_order_main = op.id_order_f
          LEFT JOIN schema.Products p ON op.id_product_f = p.id_product_main
 GROUP BY u.name_user;
+
+CREATE INDEX idx_users_name_user ON schema.Users(name_user);
+CREATE INDEX idx_products_price ON schema.Products(price);
+CREATE INDEX idx_order_products_order ON schema.Order_Products(id_order_f);
+CREATE INDEX idx_orders_user ON schema.Orders(id_user_f);
