@@ -20,8 +20,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name:
-        Debug: List files
+      - name: Debug - List files
         run: ls -laR
 
       - name: Run go mod tidy
