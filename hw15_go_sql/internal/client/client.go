@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// Структуры для работы с данными
+// Структуры для работы с данными.
 type User struct {
 	ID       int    `json:"id_user_main"`
 	Name     string `json:"name_user"`
@@ -39,13 +39,13 @@ func Klient() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Просто вызываем вспомогательные функции по порядку
+	// Просто вызываем вспомогательные функции по порядку.
 	RunGetUser(ctx)
 	RunCreateUser(ctx)
 	RunGetAndDisplayProducts(ctx)
 }
 
-// RunGetUser - получение и отображение пользователя
+// RunGetUser - получение и отображение пользователя.
 func RunGetUser(ctx context.Context) {
 	user, err := GetUser(ctx, 1)
 	if err != nil {
@@ -55,7 +55,7 @@ func RunGetUser(ctx context.Context) {
 	fmt.Printf("Полученный пользователь: %+v\n", user)
 }
 
-// RunCreateUser - создание нового пользователя
+// RunCreateUser - создание нового пользователя.
 func RunCreateUser(ctx context.Context) {
 	newUserEmail := fmt.Sprintf("new_%d@example.com", time.Now().Unix())
 	err := CreateUser(ctx, "Новичок_Пользователь", newUserEmail, "123456")
@@ -65,7 +65,7 @@ func RunCreateUser(ctx context.Context) {
 	}
 }
 
-// RunGetAndDisplayProducts - получение, отображение продуктов и обновление цены
+// RunGetAndDisplayProducts - получение, отображение продуктов и обновление цены.
 func RunGetAndDisplayProducts(ctx context.Context) {
 	products, err := GetProductsByPriceRange(ctx, 50, 100)
 	if err != nil {
@@ -78,7 +78,7 @@ func RunGetAndDisplayProducts(ctx context.Context) {
 		fmt.Printf("  ID: %d, Название: %s, Цена: %.2f\n", p.ID, p.Name, p.Price)
 	}
 
-	// Обновление цены продукта, если в списке есть хотя бы один продукт
+	// Обновление цены продукта, если в списке есть хотя бы один продукт.
 	if len(products) > 0 {
 		product := products[0]
 		newPrice := product.Price + 10.0
@@ -94,7 +94,7 @@ func RunGetAndDisplayProducts(ctx context.Context) {
 	}
 }
 
-// GetUser - получение информации о пользователе по ID
+// GetUser - получение информации о пользователе по ID.
 func GetUser(ctx context.Context, userID int) (*User, error) {
 	url := fmt.Sprintf("http://localhost:8080/v1/get_user?id=%d", userID)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -127,7 +127,7 @@ func GetUser(ctx context.Context, userID int) (*User, error) {
 	return &user, nil
 }
 
-// CreateUser - создание нового пользователя
+// CreateUser - создание нового пользователя.
 func CreateUser(ctx context.Context, name, email, password string) error {
 	newUser := NewUser{
 		Name:     name,
@@ -167,7 +167,7 @@ func CreateUser(ctx context.Context, name, email, password string) error {
 	return nil
 }
 
-// GetProductsByPriceRange - получение продуктов в заданном ценовом диапазоне
+// GetProductsByPriceRange - получение продуктов в заданном ценовом диапазоне.
 func GetProductsByPriceRange(ctx context.Context, minPrice, maxPrice float64) ([]Product, error) {
 	url := fmt.Sprintf("http://localhost:8080/v1/products/price_range?min=%.2f&max=%.2f",
 		minPrice, maxPrice)
@@ -202,7 +202,7 @@ func GetProductsByPriceRange(ctx context.Context, minPrice, maxPrice float64) ([
 	return products, nil
 }
 
-// UpdateProductPrice - обновление цены продукта
+// UpdateProductPrice - обновление цены продукта.
 func UpdateProductPrice(ctx context.Context, productID int, newPrice float64) error {
 	updateData := ProductPriceUpdate{
 		ID:    productID,

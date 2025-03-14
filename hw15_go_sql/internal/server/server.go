@@ -63,6 +63,7 @@ func respondError(w http.ResponseWriter, code int, message string) {
 
 // Обработчик получения пользователя
 func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
+	var err error
 	if r.Method != http.MethodGet {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
@@ -111,6 +112,7 @@ func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
 
 // Обработчик создания пользователя
 func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
+	var err error
 	if r.Method != http.MethodPost {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
@@ -163,6 +165,7 @@ func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
 
 // Обработчик получения продуктов по ценовому диапазону
 func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request) {
+	var err error
 	if r.Method != http.MethodGet {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
@@ -199,7 +202,6 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 	rows, err := tx.Query(context.Background(),
 		"SELECT id_product_main, name_product, price FROM schema.Products WHERE price BETWEEN $1 AND $2",
 		min, max)
-
 	if err != nil {
 		log.Printf("Ошибка получения продуктов: %v", err)
 		respondError(w, http.StatusInternalServerError, "Ошибка получения продуктов")
@@ -234,6 +236,7 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 
 // Обработчик обновления цены продукта
 func (s *Server) updateProductPrice(w http.ResponseWriter, r *http.Request) {
+	var err error
 	if r.Method != http.MethodPut {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
@@ -261,7 +264,6 @@ func (s *Server) updateProductPrice(w http.ResponseWriter, r *http.Request) {
 	_, err = tx.Exec(context.Background(),
 		"UPDATE schema.Products SET price = $1 WHERE id_product_main = $2",
 		input.Price, input.ID)
-
 	if err != nil {
 		log.Printf("Ошибка обновления цены продукта: %v", err)
 		respondError(w, http.StatusInternalServerError, "Ошибка обновления цены продукта")
