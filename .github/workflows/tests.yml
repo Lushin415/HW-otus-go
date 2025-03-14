@@ -25,7 +25,7 @@ jobs:
         with:
           version: v1.56.2
           working-directory: ${{ env.BRANCH }}
-
+          skip-cache: true
   tests:
     runs-on: ubuntu-latest
     steps:
