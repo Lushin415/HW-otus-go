@@ -19,7 +19,7 @@ jobs:
 
       - name: Run go mod tidy
         run: go mod tidy
-        working-directory: hw15_go_sql
+        working-directory: HW-otus-go/hw15_go_sql
       - name: Check out code
         uses: actions/checkout@v3
 
