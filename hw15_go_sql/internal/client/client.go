@@ -12,26 +12,26 @@ import (
 
 // Структуры для работы с данными.
 type User struct {
-	ID       int    `json:"id_user_main"`
-	Name     string `json:"name_user"`
+	ID       int    `json:"idUserMain"`
+	Name     string `json:"nameUser"`
 	Email    string `json:"email"`
 	Password string `json:"password,omitempty"`
 }
 
 type NewUser struct {
-	Name     string `json:"name_user"`
+	Name     string `json:"nameUser"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 type Product struct {
-	ID    int     `json:"id_product_main"`
-	Name  string  `json:"name_product"`
+	ID    int     `json:"idProductMain"`
+	Name  string  `json:"nameProduct"`
 	Price float64 `json:"price"`
 }
 
 type ProductPriceUpdate struct {
-	ID    int     `json:"id_product_main"`
+	ID    int     `json:"idProductMain"`
 	Price float64 `json:"price"`
 }
 

@@ -61,9 +61,8 @@ func respondError(w http.ResponseWriter, code int, message string) {
 	respondJSON(w, code, map[string]string{"error": message})
 }
 
-// Обработчик получения пользователя
+// Обработчик получения пользователя.
 func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
-	var err error
 	if r.Method != http.MethodGet {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
@@ -102,7 +101,7 @@ func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := tx.Commit(context.Background()); err != nil {
+	if err = tx.Commit(context.Background()); err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
 		return
 	}
@@ -110,9 +109,8 @@ func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, user)
 }
 
-// Обработчик создания пользователя
+// Обработчик создания пользователя.
 func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
-	var err error
 	if r.Method != http.MethodPost {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
@@ -152,7 +150,7 @@ func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := tx.Commit(context.Background()); err != nil {
+	if err = tx.Commit(context.Background()); err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
 		return
 	}
@@ -163,9 +161,8 @@ func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// Обработчик получения продуктов по ценовому диапазону
+// Обработчик получения продуктов по ценовому диапазону.
 func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request) {
-	var err error
 	if r.Method != http.MethodGet {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
@@ -212,21 +209,21 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 	var products []db.SchemaProduct
 	for rows.Next() {
 		var product db.SchemaProduct
-		if err := rows.Scan(&product.IDProductMain, &product.NameProduct, &product.Price); err != nil {
-			log.Printf("Ошибка сканирования продукта: %v", err)
+		if scanErr := rows.Scan(&product.IDProductMain, &product.NameProduct, &product.Price); scanErr != nil {
+			log.Printf("Ошибка сканирования продукта: %v", scanErr)
 			respondError(w, http.StatusInternalServerError, "Ошибка чтения данных продукта")
 			return
 		}
 		products = append(products, product)
 	}
 
-	if err := rows.Err(); err != nil {
-		log.Printf("Ошибка в курсоре: %v", err)
+	if rowsErr := rows.Err(); rowsErr != nil {
+		log.Printf("Ошибка в курсоре: %v", rowsErr)
 		respondError(w, http.StatusInternalServerError, "Ошибка обработки результатов")
 		return
 	}
 
-	if err := tx.Commit(context.Background()); err != nil {
+	if err = tx.Commit(context.Background()); err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
 		return
 	}
@@ -234,16 +231,15 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 	respondJSON(w, http.StatusOK, products)
 }
 
-// Обработчик обновления цены продукта
+// Обработчик обновления цены продукта.
 func (s *Server) updateProductPrice(w http.ResponseWriter, r *http.Request) {
-	var err error
 	if r.Method != http.MethodPut {
 		respondError(w, http.StatusMethodNotAllowed, "Метод не разрешён")
 		return
 	}
 
 	var input struct {
-		ID    int32   `json:"id_product_main"`
+		ID    int32   `json:"idProductMain"`
 		Price float64 `json:"price"`
 	}
 
@@ -270,7 +266,7 @@ func (s *Server) updateProductPrice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := tx.Commit(context.Background()); err != nil {
+	if err = tx.Commit(context.Background()); err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
 		return
 	}
