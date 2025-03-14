@@ -17,8 +17,13 @@ jobs:
         with:
           go-version: ~1.22
 
+      - name:
+          Debug: List files
+        run: ls -laR
+
       - name: Run go mod tidy
-        run: go mod tidy
+        run: |
+          cd hw15_go_sql && go mod tidy
         working-directory: hw15_go_sql
 
       - name: Check out code
