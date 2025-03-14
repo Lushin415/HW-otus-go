@@ -27,11 +27,6 @@ jobs:
         run: go mod tidy
         working-directory: hw15_go_sql
 
-      - name: Linters with debug
-        run: |
-          golangci-lint run -v --debug
-        working-directory: hw15_go_sql
-
       - name: Linters
         uses: golangci/golangci-lint-action@v3
         with:
