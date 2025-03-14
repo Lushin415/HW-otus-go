@@ -33,7 +33,7 @@ jobs:
           version: v1.64.6
           working-directory: ${{ env.BRANCH }}
           skip-cache: true
-          args: -v --debug
+          args: -v
   tests:
     runs-on: ubuntu-latest
     steps:
