@@ -20,16 +20,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name:
-        Debug: List files
+      - name: Debug - List files
         run: ls -laR
 
       - name: Run go mod tidy
-        run: |
-          cd hw15_go_sql && go mod tidy
+        run: go mod tidy
         working-directory: hw15_go_sql
-
-
 
       - name: Linters
         uses: golangci/golangci-lint-action@v3
