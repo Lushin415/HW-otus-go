@@ -117,7 +117,7 @@ func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var input struct {
-		Name     string `json:"name_user"`
+		Name     string `json:"nameUser"`
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
@@ -156,8 +156,8 @@ func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondJSON(w, http.StatusCreated, map[string]interface{}{
-		"id_user_main": userID,
-		"message":      "Пользователь создан",
+		"idUserMain": userID,
+		"message":    "Пользователь создан",
 	})
 }
 
