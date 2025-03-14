@@ -29,7 +29,7 @@ func (s *Server) Start(ip, port string) {
 
 	mux := http.NewServeMux()
 
-	// Эндпоинты
+	// Эндпоинты.
 	mux.HandleFunc("/v1/get_user", s.getUser)
 	mux.HandleFunc("/v1/create_user", s.createUser)
 	mux.HandleFunc("/v1/products/price_range", s.getProductsByPriceRange)
@@ -48,7 +48,7 @@ func (s *Server) Start(ip, port string) {
 	}
 }
 
-// Вспомогательные функции
+// Вспомогательные функции.
 func respondJSON(w http.ResponseWriter, code int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
@@ -80,7 +80,7 @@ func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Используем транзакцию
+	// Используем транзакцию.
 	tx, err := s.pool.Begin(context.Background())
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
@@ -88,7 +88,7 @@ func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(context.Background())
 
-	// Создаем новый экземпляр Queries внутри транзакции
+	// Создаем новый экземпляр Queries внутри транзакции.
 	qtx := s.queries.WithTx(tx)
 	user, err := qtx.GetUserByID(context.Background(), int32(userID))
 	if err != nil {
@@ -127,7 +127,7 @@ func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Используем транзакцию
+	// Используем транзакцию.
 	tx, err := s.pool.Begin(context.Background())
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
@@ -135,7 +135,7 @@ func (s *Server) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(context.Background())
 
-	// Создаем параметры для запроса
+	// Создаем параметры для запроса.
 	params := db.CreateUserParams{
 		NameUser: input.Name,
 		Email:    input.Email,
@@ -187,7 +187,7 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	// Используем транзакцию
+	// Используем транзакцию.
 	tx, err := s.pool.Begin(context.Background())
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
@@ -195,7 +195,7 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 	}
 	defer tx.Rollback(context.Background())
 
-	// Используем прямой SQL
+	// Используем прямой SQL.
 	rows, err := tx.Query(context.Background(),
 		"SELECT id_product_main, name_product, price FROM schema.Products WHERE price BETWEEN $1 AND $2",
 		min, max)
@@ -248,7 +248,7 @@ func (s *Server) updateProductPrice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Используем транзакцию
+	// Используем транзакцию.
 	tx, err := s.pool.Begin(context.Background())
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка базы данных")
@@ -256,7 +256,7 @@ func (s *Server) updateProductPrice(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(context.Background())
 
-	// Используем прямой SQL запрос
+	// Используем прямой SQL запрос.
 	_, err = tx.Exec(context.Background(),
 		"UPDATE schema.Products SET price = $1 WHERE id_product_main = $2",
 		input.Price, input.ID)

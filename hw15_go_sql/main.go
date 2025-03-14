@@ -20,7 +20,7 @@ func main() {
 }
 
 func run() error {
-	// Определение имени базы данных (в нижнем регистре!)
+	// Определение имени базы данных (в нижнем регистре!).
 	dbName := "db_alex"
 
 	// Подключение к базе postgres для создания нашей базы
@@ -33,7 +33,7 @@ func run() error {
 
 	log.Printf("Подключение к основной БД успешно")
 
-	// Проверяем существование нашей базы данных (запрос в нижнем регистре)
+	// Проверяем существование нашей базы данных (запрос в нижнем регистре).
 	var exists bool
 	err = mainPool.QueryRow(context.Background(),
 		"SELECT EXISTS(SELECT 1 FROM pg_database WHERE lower(datname) = lower($1))", dbName).Scan(&exists)
@@ -41,7 +41,7 @@ func run() error {
 		return fmt.Errorf("ошибка проверки существования БД: %w", err)
 	}
 
-	// Если база не существует, создаем её
+	// Если база не существует, создаем её.
 	if !exists {
 		log.Printf("База данных %s не существует, создаем...", dbName)
 		_, err = mainPool.Exec(context.Background(), fmt.Sprintf("CREATE DATABASE %s", dbName))
@@ -53,7 +53,7 @@ func run() error {
 		log.Printf("База данных %s уже существует", dbName)
 	}
 
-	// Подключение к созданной базе данных
+	// Подключение к созданной базе данных.
 	dbURL := fmt.Sprintf("postgres://postgres:qwerty123@localhost:5433/%s?sslmode=disable", dbName)
 	log.Printf("Подключение к БД: %s", dbURL)
 
@@ -63,23 +63,23 @@ func run() error {
 	}
 	defer dbPool.Close()
 
-	// Проверка соединения
+	// Проверка соединения.
 	err = dbPool.Ping(context.Background())
 	if err != nil {
 		return fmt.Errorf("ошибка проверки соединения с базой данных: %w", err)
 	}
 	log.Println("Соединение с БД установлено успешно")
 
-	// Инициализация базы данных
+	// Инициализация базы данных.
 	if err = initializeDatabase(dbPool); err != nil {
 		return fmt.Errorf("ошибка инициализации базы данных: %w", err)
 	}
 
-	// Создание и запуск сервера
+	// Создание и запуск сервера.
 	srv := server.NewServer(dbPool)
 	go srv.Start("0.0.0.0", "8080")
 
-	// Даем серверу время запуститься перед запуском клиента
+	// Даем серверу время запуститься перед запуском клиента.
 	time.Sleep(2 * time.Second)
 
 	// Запуск клиента
@@ -98,7 +98,7 @@ func checkSchemaAndTables(dbPool *pgxpool.Pool) (tablesExist bool, err error) {
 			WHERE table_schema = 'schema' AND table_name = 'users'
 		)`).Scan(&tablesExist)
 	if err != nil {
-		// Проверяем, существует ли схема
+		// Проверяем, существует ли схема.
 		log.Println("Проверяем существование схемы 'schema'...")
 		var schemaExists bool
 		dbPool.QueryRow(context.Background(),
