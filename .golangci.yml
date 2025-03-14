@@ -4,6 +4,12 @@ run:
     - bench
     - !bench
 
+  skip-files:
+    - ".*\\.sqlc\\.go$"
+    - "db/models.go"
+    - "db/querier.go"
+    - "db/db.go"
+
 linters-settings:
   funlen:
     lines: 150
