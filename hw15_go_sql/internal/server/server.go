@@ -175,13 +175,13 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	min, err := strconv.ParseFloat(minStr, 64)
+	minV, err := strconv.ParseFloat(minStr, 64)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, "Некорректная минимальная цена")
 		return
 	}
 
-	max, err := strconv.ParseFloat(maxStr, 64)
+	maxV, err := strconv.ParseFloat(maxStr, 64)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, "Некорректная максимальная цена")
 		return
@@ -198,7 +198,7 @@ func (s *Server) getProductsByPriceRange(w http.ResponseWriter, r *http.Request)
 	// Используем прямой SQL.
 	rows, err := tx.Query(context.Background(),
 		"SELECT id_product_main, name_product, price FROM schema.Products WHERE price BETWEEN $1 AND $2",
-		min, max)
+		minV, maxV)
 	if err != nil {
 		log.Printf("Ошибка получения продуктов: %v", err)
 		respondError(w, http.StatusInternalServerError, "Ошибка получения продуктов")
