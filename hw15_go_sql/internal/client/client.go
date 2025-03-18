@@ -40,6 +40,7 @@ func Klient() {
 	defer cancel()
 
 	// Просто вызываем вспомогательные функции по порядку.
+
 	RunGetUser(ctx)
 	RunCreateUser(ctx)
 	RunGetAndDisplayProducts(ctx)

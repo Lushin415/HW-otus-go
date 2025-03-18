@@ -1,4 +1,6 @@
+DROP DATABASE DB_Alex;
 CREATE DATABASE DB_Alex;
+DROP SCHEMA schema CASCADE ;
 CREATE SCHEMA schema;
 CREATE TABLE schema.Users (
     id_user_main SERIAL PRIMARY KEY,
