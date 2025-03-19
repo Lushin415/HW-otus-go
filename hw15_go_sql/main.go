@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/Lushin415/HW-otus-go/hw15_go_sql/internal/db"
 	"log"
 	"time"
@@ -19,7 +20,32 @@ func main() {
 func run() error {
 	// Подключаемся к ОСНОВНОЙ базе данных.
 	connectionString := "postgres://postgres:qwerty123@localhost:5433/postgres?sslmode=disable"
-	pool, err := db.Connect(context.Background(), connectionString)
+	mainPool, err := db.Connect(context.Background(), connectionString)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Проверяем существование базы DB_Alex
+	var exists bool
+	err = mainPool.QueryRow(context.Background(),
+		"SELECT EXISTS(SELECT 1 FROM pg_database WHERE datname = 'db_alex')").Scan(&exists)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Создаем базу, если она не существует
+	if !exists {
+		_, err = mainPool.Exec(context.Background(), "CREATE DATABASE db_alex")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("База данных db_alex создана")
+	}
+	mainPool.Close()
+
+	//Подключаемся к базе db_alex
+	dbConnection := "postgres://postgres:qwerty123@localhost:5433/db_alex?sslmode=disable"
+	pool, err := db.Connect(context.Background(), dbConnection)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,10 +55,10 @@ func run() error {
 	manager := db.NewManager(
 		pool,                   // теперь pool определен
 		"db_alex",              // имя базы данных
-		"sqlc/hw14_db_new.sql", // путь к вашему SQL файлу
+		"sqlc/hw14_db_new.sql", // путь к SQL файлу
 	)
 
-	// Затем выполнить скрипт (hw14_db.sql).
+	// Затем выполнить скрипт (hw14_db_new.sql).
 	err = manager.ExecuteSQL(context.Background())
 	if err != nil {
 		log.Fatal(err)
@@ -46,7 +72,7 @@ func run() error {
 	time.Sleep(2 * time.Second)
 
 	// Запуск клиента
-	client.Klient()
+	client.RunClient()
 
 	return nil
 }

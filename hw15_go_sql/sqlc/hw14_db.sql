@@ -1,9 +1,9 @@
 --1. Удалить БД
-DROP DATABASE DB_Alex;
+--DROP DATABASE DB_Alex;
 --2. Создать БД
-CREATE DATABASE DB_Alex;
+--CREATE DATABASE DB_Alex;
 --3. Удалить Схему
-DROP SCHEMA schema CASCADE ;
+--DROP SCHEMA schema CASCADE ;
 -- 4. Создать схему
 CREATE SCHEMA schema;
 --5. Создать таблицу Users
@@ -30,7 +30,7 @@ CREATE TABLE schema.Products (
     name_product TEXT NOT NULL,
     price DECIMAL(10,2) NOT NULL
 );
---6. Создать таблицу Orders_Products
+--8. Создать таблицу Orders_Products
 CREATE TABLE schema.Order_Products (
     id_order_f INT NOT NULL,
     id_product_f INT NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE schema.Order_Products (
     CONSTRAINT fk_order FOREIGN KEY (id_order_f) REFERENCES schema.orders(id_order_main) ON DELETE CASCADE,
     CONSTRAINT fk_product FOREIGN KEY (id_product_f) REFERENCES schema.products(id_product_main) ON DELETE CASCADE
 );
---7. Заполнить таблицу Users
+--9. Заполнить таблицу Users
 INSERT INTO schema.Users (name_user, email, password)
 VALUES
     ('Иван Иванов', 'ivan@example.com', 'qwerty'),
@@ -47,7 +47,7 @@ VALUES
     ('Женя Жбанов', 'jbanov@example.com', '123'),
     ('Катя Жукова', 'jukova@example.com', '456'),
     ('Аня Гавриленко', 'gavrilenko@example.com', '456');
---8. Заполнить таблицу Products
+--10. Заполнить таблицу Products
 INSERT INTO schema.Products (name_product, price)
 VALUES
     ('Носки', 10.00),
@@ -55,7 +55,7 @@ VALUES
     ('Калоши', 50.00),
     ('Сандали', 70.00),
     ('Туфли',90.00);
--- 9. Заполнить таблицу Orders
+-- 11. Заполнить таблицу Orders
 INSERT INTO schema.Orders (id_user_f, order_date, total_amount)
 VALUES
     (1, '2025-02-25', 0), -- Иван Иванов
@@ -63,7 +63,7 @@ VALUES
     (3, '2025-02-25', 0), -- Женя Жбанов
     (4, '2025-02-25', 0), -- Катя Жукова
     (5, '2025-02-25', 0); -- Аня Гавриленко
--- 10. Заполнить таблицу Order_Products
+-- 12. Заполнить таблицу Order_Products
 INSERT INTO schema.Order_Products (id_order_f, id_product_f, quantity)
 VALUES
     -- Иван Иванов
@@ -83,24 +83,24 @@ VALUES
     -- Аня Гавриленко
     (5, 5, 3), -- 3 Туфли
     (5, 1, 1); -- 1 Носки
--- 11. Удалить заказы с ID = 1
+-- 13. Удалить заказы с ID = 1
 DELETE FROM schema.Orders WHERE id_order_main = 1;
 
--- 12. Установить цену 20.00, где ID =1 в таблице Products
+-- 14. Установить цену 20.00, где ID =1 в таблице Products
 UPDATE schema.Products
 SET price = 20.00
 WHERE id_product_main = 1;
--- 13. Обновить таблицу Users, установить фио для email jukova@example.com на Катю Муравьеву
+-- 15. Обновить таблицу Users, установить фио для email jukova@example.com на Катю Муравьеву
 UPDATE schema.Users
 SET name_user = 'Екатерина Муравьева'
 WHERE email = 'jukova@example.com';
--- 14. Удалить пользователя, где почта Жбанов
+-- 16. Удалить пользователя, где почта Жбанов
 DELETE FROM schema.Users
 WHERE email = 'jbanov@example.com';
--- 15. Удалить продукт, где цена менее 50
+-- 17. Удалить продукт, где цена менее 50
 DELETE FROM schema.Products
 WHERE price < 50;
--- 16. Обновить таблицу с заказами
+-- 18. Обновить таблицу с заказами
 UPDATE schema.Orders
 SET total_amount = (
     SELECT COALESCE(SUM(op.quantity * p.price), 0)
@@ -108,15 +108,15 @@ SET total_amount = (
              JOIN schema.Products p ON op.id_product_f = p.id_product_main
     WHERE op.id_order_f = Orders.id_order_main
 );
--- 17. Выбрать пользователей, где пароль 123
+-- 19. Выбрать пользователей, где пароль 123
 SELECT * FROM schema.Users WHERE password LIKE '123';
--- 18. Выбрать продукты, где цена между 50 и 100
+-- 20. Выбрать продукты, где цена между 50 и 100
 SELECT * FROM schema.Products WHERE price BETWEEN 50 AND 100;
--- 19. Показать ID заказа, дату заказа и общую сумму заказа (где ID = 4)
+-- 21. Показать ID заказа, дату заказа и общую сумму заказа (где ID = 4)
 SELECT o.id_order_main, o.order_date, o.total_amount
 FROM schema.Orders o
 WHERE o.id_user_f = 4;
--- 20. Посчитать общие траты и среднюю цену товара для каждого пользователя
+-- 22. Посчитать общие траты и среднюю цену товара для каждого пользователя
 SELECT
     u.name_user,
     COALESCE(SUM(op.quantity * p.price), 0) AS total_spent,

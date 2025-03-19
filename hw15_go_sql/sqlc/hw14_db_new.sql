@@ -1,7 +1,7 @@
 --1. Удалить БД
 --DROP DATABASE DB_Alex;
 --2. Создать БД
-CREATE DATABASE DB_Alex;
+--CREATE DATABASE db_alex;
 --3. Удалить Схему
 --DROP SCHEMA schema CASCADE ;
 -- 4. Создать схему

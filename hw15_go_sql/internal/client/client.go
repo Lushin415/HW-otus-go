@@ -2,7 +2,6 @@ package client
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,234 +9,143 @@ import (
 	"time"
 )
 
-// Структуры для работы с данными.
-type User struct {
-	ID       int    `json:"idUserMain"`
-	Name     string `json:"nameUser"`
-	Email    string `json:"email"`
-	Password string `json:"password,omitempty"`
+// RunClient запускает клиентские тесты API
+func RunClient() {
+	fmt.Println("Запуск клиентских тестов API...")
+
+	// Создаем пользователя
+	createUser()
+
+	// Получаем пользователей с паролем "123"
+	getUsersByPassword("123")
+
+	// Получаем продукты в ценовом диапазоне
+	getProductsByPriceRange(50.0, 100.0)
+
+	// Обновляем цену продукта
+	updateProductPrice(5, 95.0)
+
+	// Получаем статистику пользователей
+	getUsersSpendingStats()
 }
 
-type NewUser struct {
-	Name     string `json:"nameUser"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+// Создаем нового пользователя
+func createUser() {
+	fmt.Println("\n--- Создание нового пользователя ---")
 
-type Product struct {
-	ID    int     `json:"idProductMain"`
-	Name  string  `json:"nameProduct"`
-	Price float64 `json:"price"`
-}
+	// Данные для создания пользователя
+	userData := map[string]string{
+		"name_user": "Новый Пользователь",
+		"email":     fmt.Sprintf("user_%d@example.com", time.Now().Unix()),
+		"password":  "simple123",
+	}
 
-type ProductPriceUpdate struct {
-	ID    int     `json:"idProductMain"`
-	Price float64 `json:"price"`
-}
+	// Кодируем данные в JSON
+	jsonData, _ := json.Marshal(userData)
 
-func Klient() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	// Отправляем POST-запрос
+	resp, err := http.Post("http://localhost:8080/v1/user/create",
+		"application/json", bytes.NewBuffer(jsonData))
 
-	// Просто вызываем вспомогательные функции по порядку.
-
-	RunGetUser(ctx)
-	RunCreateUser(ctx)
-	RunGetAndDisplayProducts(ctx)
-}
-
-// RunGetUser - получение и отображение пользователя.
-func RunGetUser(ctx context.Context) {
-	user, err := GetUser(ctx, 1)
 	if err != nil {
-		fmt.Println("Ошибка при получении пользователя:", err)
+		fmt.Println("Ошибка при отправке запроса:", err)
 		return
-	}
-	fmt.Printf("Полученный пользователь: %+v\n", user)
-}
-
-// RunCreateUser - создание нового пользователя.
-func RunCreateUser(ctx context.Context) {
-	newUserEmail := fmt.Sprintf("new_%d@example.com", time.Now().Unix())
-	err := CreateUser(ctx, "Новичок_Пользователь", newUserEmail, "123456")
-	if err != nil {
-		fmt.Println("Ошибка при создании пользователя:", err)
-		return
-	}
-}
-
-// RunGetAndDisplayProducts - получение, отображение продуктов и обновление цены.
-func RunGetAndDisplayProducts(ctx context.Context) {
-	products, err := GetProductsByPriceRange(ctx, 50, 100)
-	if err != nil {
-		fmt.Println("Ошибка при получении продуктов:", err)
-		return
-	}
-
-	fmt.Println("\nПродукты в ценовом диапазоне 50-100:")
-	for _, p := range products {
-		fmt.Printf("  ID: %d, Название: %s, Цена: %.2f\n", p.ID, p.Name, p.Price)
-	}
-
-	// Обновление цены продукта, если в списке есть хотя бы один продукт.
-	if len(products) > 0 {
-		product := products[0]
-		newPrice := product.Price + 10.0
-
-		err = UpdateProductPrice(ctx, product.ID, newPrice)
-		if err != nil {
-			fmt.Println("Ошибка при обновлении цены продукта:", err)
-			return
-		}
-
-		fmt.Printf("\nЦена продукта '%s' (ID: %d) обновлена с %.2f на %.2f\n",
-			product.Name, product.ID, product.Price, newPrice)
-	}
-}
-
-// GetUser - получение информации о пользователе по ID.
-func GetUser(ctx context.Context, userID int) (*User, error) {
-	url := fmt.Sprintf("http://localhost:8080/v1/get_user?id=%d", userID)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("ошибка создания запроса: %w", err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("ошибка выполнения запроса: %w", err)
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("ошибка чтения ответа: %w", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("ошибка получения пользователя: код %d, ответ: %s",
-			resp.StatusCode, string(body))
-	}
-
-	var user User
-	err = json.Unmarshal(body, &user)
-	if err != nil {
-		return nil, fmt.Errorf("ошибка разбора JSON: %w", err)
-	}
-
-	return &user, nil
+	// Читаем ответ
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println("Ответ сервера:", string(body))
 }
 
-// CreateUser - создание нового пользователя.
-func CreateUser(ctx context.Context, name, email, password string) error {
-	newUser := NewUser{
-		Name:     name,
-		Email:    email,
-		Password: password,
+// Получаем пользователей по паролю
+func getUsersByPassword(password string) {
+	fmt.Println("\n--- Получение пользователей с паролем ---")
+
+	// Отправляем GET-запрос
+	resp, err := http.Get("http://localhost:8080/v1/user/get_by_password?password=" + password)
+
+	if err != nil {
+		fmt.Println("Ошибка при отправке запроса:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Читаем ответ
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println("Результат:", string(body))
+}
+
+// Получаем продукты в ценовом диапазоне
+func getProductsByPriceRange(min, max float64) {
+	fmt.Println("\n--- Получение продуктов по ценовому диапазону ---")
+
+	// Формируем URL с параметрами
+	url := fmt.Sprintf("http://localhost:8080/v1/product/price_range?min=%.2f&max=%.2f", min, max)
+
+	// Отправляем GET-запрос
+	resp, err := http.Get(url)
+
+	if err != nil {
+		fmt.Println("Ошибка при отправке запроса:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Читаем ответ
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println("Продукты в диапазоне:", string(body))
+}
+
+// Обновляем цену продукта
+func updateProductPrice(productID int, newPrice float64) {
+	fmt.Println("\n--- Обновление цены продукта ---")
+
+	// Данные для обновления цены
+	updateData := map[string]interface{}{
+		"id_product_main": productID,
+		"price":           fmt.Sprintf("%.2f", newPrice),
 	}
 
-	userData, err := json.Marshal(newUser)
-	if err != nil {
-		return fmt.Errorf("ошибка сериализации JSON: %w", err)
-	}
+	// Кодируем данные в JSON
+	jsonData, _ := json.Marshal(updateData)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
-		"http://localhost:8080/v1/create_user", bytes.NewBuffer(userData))
-	if err != nil {
-		return fmt.Errorf("ошибка создания запроса: %w", err)
-	}
+	// Создаем PUT-запрос
+	req, _ := http.NewRequest(http.MethodPut,
+		"http://localhost:8080/v1/product/update_price",
+		bytes.NewBuffer(jsonData))
+
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	// Отправляем запрос
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
 	if err != nil {
-		return fmt.Errorf("ошибка выполнения запроса: %w", err)
+		fmt.Println("Ошибка при отправке запроса:", err)
+		return
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("ошибка чтения ответа: %w", err)
-	}
-
-	if resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("ошибка создания пользователя: код %d, ответ: %s",
-			resp.StatusCode, string(body))
-	}
-
-	fmt.Println("Ответ сервера:", string(body))
-	return nil
+	// Читаем ответ
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println("Результат обновления:", string(body))
 }
 
-// GetProductsByPriceRange - получение продуктов в заданном ценовом диапазоне.
-func GetProductsByPriceRange(ctx context.Context, minPrice, maxPrice float64) ([]Product, error) {
-	url := fmt.Sprintf("http://localhost:8080/v1/products/price_range?min=%.2f&max=%.2f",
-		minPrice, maxPrice)
+// Получаем статистику пользователей
+func getUsersSpendingStats() {
+	fmt.Println("\n--- Получение статистики пользователей ---")
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("ошибка создания запроса: %w", err)
-	}
+	// Отправляем GET-запрос
+	resp, err := http.Get("http://localhost:8080/v1/user/spending_stats")
 
-	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("ошибка выполнения запроса: %w", err)
+		fmt.Println("Ошибка при отправке запроса:", err)
+		return
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("ошибка чтения ответа: %w", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("ошибка получения продуктов: код %d, ответ: %s",
-			resp.StatusCode, string(body))
-	}
-
-	var products []Product
-	err = json.Unmarshal(body, &products)
-	if err != nil {
-		return nil, fmt.Errorf("ошибка разбора JSON: %w", err)
-	}
-
-	return products, nil
-}
-
-// UpdateProductPrice - обновление цены продукта.
-func UpdateProductPrice(ctx context.Context, productID int, newPrice float64) error {
-	updateData := ProductPriceUpdate{
-		ID:    productID,
-		Price: newPrice,
-	}
-
-	updateJSON, err := json.Marshal(updateData)
-	if err != nil {
-		return fmt.Errorf("ошибка сериализации JSON: %w", err)
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut,
-		"http://localhost:8080/v1/update_product_price", bytes.NewBuffer(updateJSON))
-	if err != nil {
-		return fmt.Errorf("ошибка создания запроса: %w", err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("ошибка выполнения запроса: %w", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("ошибка чтения ответа: %w", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("ошибка обновления цены: код %d, ответ: %s",
-			resp.StatusCode, string(body))
-	}
-
-	fmt.Println("Ответ сервера:", string(body))
-	return nil
+	// Читаем ответ
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println("Статистика пользователей:", string(body))
 }
