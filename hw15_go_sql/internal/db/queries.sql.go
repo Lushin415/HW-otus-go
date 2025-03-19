@@ -11,6 +11,59 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const createOrder = `-- name: CreateOrder :one
+INSERT INTO schema.Orders (id_user_f, order_date, total_amount)
+VALUES ($1, $2, $3)
+    RETURNING id_order_main
+`
+
+type CreateOrderParams struct {
+	IDUserF     int32          `json:"id_user_f"`
+	OrderDate   pgtype.Date    `json:"order_date"`
+	TotalAmount pgtype.Numeric `json:"total_amount"`
+}
+
+func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (int32, error) {
+	row := q.db.QueryRow(ctx, createOrder, arg.IDUserF, arg.OrderDate, arg.TotalAmount)
+	var id_order_main int32
+	err := row.Scan(&id_order_main)
+	return id_order_main, err
+}
+
+const createOrderProduct = `-- name: CreateOrderProduct :exec
+INSERT INTO schema.Order_Products (id_order_f, id_product_f, quantity)
+VALUES ($1, $2, $3)
+`
+
+type CreateOrderProductParams struct {
+	IDOrderF   int32 `json:"id_order_f"`
+	IDProductF int32 `json:"id_product_f"`
+	Quantity   int32 `json:"quantity"`
+}
+
+func (q *Queries) CreateOrderProduct(ctx context.Context, arg CreateOrderProductParams) error {
+	_, err := q.db.Exec(ctx, createOrderProduct, arg.IDOrderF, arg.IDProductF, arg.Quantity)
+	return err
+}
+
+const createProduct = `-- name: CreateProduct :one
+INSERT INTO schema.Products (name_product, price)
+VALUES ($1, $2)
+    RETURNING id_product_main
+`
+
+type CreateProductParams struct {
+	NameProduct string         `json:"name_product"`
+	Price       pgtype.Numeric `json:"price"`
+}
+
+func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (int32, error) {
+	row := q.db.QueryRow(ctx, createProduct, arg.NameProduct, arg.Price)
+	var id_product_main int32
+	err := row.Scan(&id_product_main)
+	return id_product_main, err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO schema.Users (name_user, email, password)
 VALUES ($1, $2, $3)
@@ -30,36 +83,54 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, 
 	return id_user_main, err
 }
 
-const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM schema.Users WHERE id_user_main = $1
+const deleteCheapProducts = `-- name: DeleteCheapProducts :exec
+DELETE FROM schema.Products WHERE price < $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, idUserMain int32) error {
-	_, err := q.db.Exec(ctx, deleteUser, idUserMain)
+func (q *Queries) DeleteCheapProducts(ctx context.Context, price pgtype.Numeric) error {
+	_, err := q.db.Exec(ctx, deleteCheapProducts, price)
 	return err
 }
 
-const getOrdersByUser = `-- name: GetOrdersByUser :many
+const deleteOrder = `-- name: DeleteOrder :exec
+DELETE FROM schema.Orders WHERE id_order_main = $1
+`
+
+func (q *Queries) DeleteOrder(ctx context.Context, idOrderMain int32) error {
+	_, err := q.db.Exec(ctx, deleteOrder, idOrderMain)
+	return err
+}
+
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM schema.Users WHERE email = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, email string) error {
+	_, err := q.db.Exec(ctx, deleteUser, email)
+	return err
+}
+
+const getOrderByUserID = `-- name: GetOrderByUserID :many
 SELECT id_order_main, order_date, total_amount
 FROM schema.Orders
 WHERE id_user_f = $1
 `
 
-type GetOrdersByUserRow struct {
+type GetOrderByUserIDRow struct {
 	IDOrderMain int32          `json:"id_order_main"`
 	OrderDate   pgtype.Date    `json:"order_date"`
 	TotalAmount pgtype.Numeric `json:"total_amount"`
 }
 
-func (q *Queries) GetOrdersByUser(ctx context.Context, idUserF int32) ([]GetOrdersByUserRow, error) {
-	rows, err := q.db.Query(ctx, getOrdersByUser, idUserF)
+func (q *Queries) GetOrderByUserID(ctx context.Context, idUserF int32) ([]GetOrderByUserIDRow, error) {
+	rows, err := q.db.Query(ctx, getOrderByUserID, idUserF)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetOrdersByUserRow{}
+	items := []GetOrderByUserIDRow{}
 	for rows.Next() {
-		var i GetOrdersByUserRow
+		var i GetOrderByUserIDRow
 		if err := rows.Scan(&i.IDOrderMain, &i.OrderDate, &i.TotalAmount); err != nil {
 			return nil, err
 		}
@@ -72,9 +143,7 @@ func (q *Queries) GetOrdersByUser(ctx context.Context, idUserF int32) ([]GetOrde
 }
 
 const getProductsByPriceRange = `-- name: GetProductsByPriceRange :many
-SELECT id_product_main, name_product, price
-FROM schema.Products
-WHERE price BETWEEN $1 AND $2
+SELECT id_product_main, name_product, price FROM schema.Products WHERE price BETWEEN $1 AND $2
 `
 
 type GetProductsByPriceRangeParams struct {
@@ -102,44 +171,8 @@ func (q *Queries) GetProductsByPriceRange(ctx context.Context, arg GetProductsBy
 	return items, nil
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id_user_main, name_user, email, password
-FROM schema.Users
-WHERE email = $1
-`
-
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (SchemaUser, error) {
-	row := q.db.QueryRow(ctx, getUserByEmail, email)
-	var i SchemaUser
-	err := row.Scan(
-		&i.IDUserMain,
-		&i.NameUser,
-		&i.Email,
-		&i.Password,
-	)
-	return i, err
-}
-
-const getUserByID = `-- name: GetUserByID :one
-SELECT id_user_main, name_user, email FROM schema.Users WHERE id_user_main = $1
-`
-
-type GetUserByIDRow struct {
-	IDUserMain int32  `json:"id_user_main"`
-	NameUser   string `json:"name_user"`
-	Email      string `json:"email"`
-}
-
-func (q *Queries) GetUserByID(ctx context.Context, idUserMain int32) (GetUserByIDRow, error) {
-	row := q.db.QueryRow(ctx, getUserByID, idUserMain)
-	var i GetUserByIDRow
-	err := row.Scan(&i.IDUserMain, &i.NameUser, &i.Email)
-	return i, err
-}
-
-const getUserSpendingMetrics = `-- name: GetUserSpendingMetrics :many
+const getUserSpendingStats = `-- name: GetUserSpendingStats :many
 SELECT
-    u.id_user_main,
     u.name_user,
     COALESCE(SUM(op.quantity * p.price), 0) AS total_spent,
     COALESCE(SUM(p.price * op.quantity) / NULLIF(SUM(op.quantity), 0), 0) AS avg_product_price
@@ -147,30 +180,53 @@ FROM schema.Users u
          LEFT JOIN schema.Orders o ON u.id_user_main = o.id_user_f
          LEFT JOIN schema.Order_Products op ON o.id_order_main = op.id_order_f
          LEFT JOIN schema.Products p ON op.id_product_f = p.id_product_main
-GROUP BY u.id_user_main, u.name_user
+GROUP BY u.name_user
 `
 
-type GetUserSpendingMetricsRow struct {
-	IDUserMain      int32       `json:"id_user_main"`
+type GetUserSpendingStatsRow struct {
 	NameUser        string      `json:"name_user"`
 	TotalSpent      interface{} `json:"total_spent"`
 	AvgProductPrice interface{} `json:"avg_product_price"`
 }
 
-func (q *Queries) GetUserSpendingMetrics(ctx context.Context) ([]GetUserSpendingMetricsRow, error) {
-	rows, err := q.db.Query(ctx, getUserSpendingMetrics)
+func (q *Queries) GetUserSpendingStats(ctx context.Context) ([]GetUserSpendingStatsRow, error) {
+	rows, err := q.db.Query(ctx, getUserSpendingStats)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetUserSpendingMetricsRow{}
+	items := []GetUserSpendingStatsRow{}
 	for rows.Next() {
-		var i GetUserSpendingMetricsRow
+		var i GetUserSpendingStatsRow
+		if err := rows.Scan(&i.NameUser, &i.TotalSpent, &i.AvgProductPrice); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUsersByPassword = `-- name: GetUsersByPassword :many
+SELECT id_user_main, name_user, email, password FROM schema.Users WHERE password = $1
+`
+
+func (q *Queries) GetUsersByPassword(ctx context.Context, password string) ([]SchemaUser, error) {
+	rows, err := q.db.Query(ctx, getUsersByPassword, password)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SchemaUser{}
+	for rows.Next() {
+		var i SchemaUser
 		if err := rows.Scan(
 			&i.IDUserMain,
 			&i.NameUser,
-			&i.TotalSpent,
-			&i.AvgProductPrice,
+			&i.Email,
+			&i.Password,
 		); err != nil {
 			return nil, err
 		}
@@ -182,66 +238,19 @@ func (q *Queries) GetUserSpendingMetrics(ctx context.Context) ([]GetUserSpending
 	return items, nil
 }
 
-const getUsers = `-- name: GetUsers :many
-SELECT id_user_main, name_user, email FROM schema.Users
+const updateOrderTotal = `-- name: UpdateOrderTotal :exec
+UPDATE schema.Orders
+SET total_amount = (
+    SELECT COALESCE(SUM(op.quantity * p.price), 0)
+    FROM schema.Order_Products op
+             JOIN schema.Products p ON op.id_product_f = p.id_product_main
+    WHERE op.id_order_f = schema.Orders.id_order_main
+)
 `
 
-type GetUsersRow struct {
-	IDUserMain int32  `json:"id_user_main"`
-	NameUser   string `json:"name_user"`
-	Email      string `json:"email"`
-}
-
-func (q *Queries) GetUsers(ctx context.Context) ([]GetUsersRow, error) {
-	rows, err := q.db.Query(ctx, getUsers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []GetUsersRow{}
-	for rows.Next() {
-		var i GetUsersRow
-		if err := rows.Scan(&i.IDUserMain, &i.NameUser, &i.Email); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getUsersByPasswordPattern = `-- name: GetUsersByPasswordPattern :many
-SELECT id_user_main, name_user, email
-FROM schema.Users
-WHERE password LIKE $1
-`
-
-type GetUsersByPasswordPatternRow struct {
-	IDUserMain int32  `json:"id_user_main"`
-	NameUser   string `json:"name_user"`
-	Email      string `json:"email"`
-}
-
-func (q *Queries) GetUsersByPasswordPattern(ctx context.Context, password string) ([]GetUsersByPasswordPatternRow, error) {
-	rows, err := q.db.Query(ctx, getUsersByPasswordPattern, password)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []GetUsersByPasswordPatternRow{}
-	for rows.Next() {
-		var i GetUsersByPasswordPatternRow
-		if err := rows.Scan(&i.IDUserMain, &i.NameUser, &i.Email); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) UpdateOrderTotal(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, updateOrderTotal)
+	return err
 }
 
 const updateProductPrice = `-- name: UpdateProductPrice :exec
@@ -257,5 +266,21 @@ type UpdateProductPriceParams struct {
 
 func (q *Queries) UpdateProductPrice(ctx context.Context, arg UpdateProductPriceParams) error {
 	_, err := q.db.Exec(ctx, updateProductPrice, arg.Price, arg.IDProductMain)
+	return err
+}
+
+const updateUserName = `-- name: UpdateUserName :exec
+UPDATE schema.Users
+SET name_user = $1
+WHERE email = $2
+`
+
+type UpdateUserNameParams struct {
+	NameUser string `json:"name_user"`
+	Email    string `json:"email"`
+}
+
+func (q *Queries) UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error {
+	_, err := q.db.Exec(ctx, updateUserName, arg.NameUser, arg.Email)
 	return err
 }

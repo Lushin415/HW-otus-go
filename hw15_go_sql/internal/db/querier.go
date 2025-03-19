@@ -6,19 +6,25 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
+	CreateOrder(ctx context.Context, arg CreateOrderParams) (int32, error)
+	CreateOrderProduct(ctx context.Context, arg CreateOrderProductParams) error
+	CreateProduct(ctx context.Context, arg CreateProductParams) (int32, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (int32, error)
-	DeleteUser(ctx context.Context, idUserMain int32) error
-	GetOrdersByUser(ctx context.Context, idUserF int32) ([]GetOrdersByUserRow, error)
+	DeleteCheapProducts(ctx context.Context, price pgtype.Numeric) error
+	DeleteOrder(ctx context.Context, idOrderMain int32) error
+	DeleteUser(ctx context.Context, email string) error
+	GetOrderByUserID(ctx context.Context, idUserF int32) ([]GetOrderByUserIDRow, error)
 	GetProductsByPriceRange(ctx context.Context, arg GetProductsByPriceRangeParams) ([]SchemaProduct, error)
-	GetUserByEmail(ctx context.Context, email string) (SchemaUser, error)
-	GetUserByID(ctx context.Context, idUserMain int32) (GetUserByIDRow, error)
-	GetUserSpendingMetrics(ctx context.Context) ([]GetUserSpendingMetricsRow, error)
-	GetUsers(ctx context.Context) ([]GetUsersRow, error)
-	GetUsersByPasswordPattern(ctx context.Context, password string) ([]GetUsersByPasswordPatternRow, error)
+	GetUserSpendingStats(ctx context.Context) ([]GetUserSpendingStatsRow, error)
+	GetUsersByPassword(ctx context.Context, password string) ([]SchemaUser, error)
+	UpdateOrderTotal(ctx context.Context) error
 	UpdateProductPrice(ctx context.Context, arg UpdateProductPriceParams) error
+	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error
 }
 
 var _ Querier = (*Queries)(nil)

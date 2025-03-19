@@ -27,12 +27,12 @@ func run() error {
 
 	// Создаем менеджер.
 	manager := db.NewManager(
-		pool,               // теперь pool определен
-		"db_alex",          // имя базы данных
-		"sqlc/hw14_DB.sql", // путь к вашему SQL файлу
+		pool,                   // теперь pool определен
+		"db_alex",              // имя базы данных
+		"sqlc/hw14_db_new.sql", // путь к вашему SQL файлу
 	)
 
-	// Затем выполнить скрипт (hw14_DB.sql).
+	// Затем выполнить скрипт (hw14_db.sql).
 	err = manager.ExecuteSQL(context.Background())
 	if err != nil {
 		log.Fatal(err)
