@@ -3,6 +3,8 @@ run:
   build-tags:
     - bench
     - !bench
+  run:
+    skip-dirs-use-default: true
 
   skip-files:
     - ".*\\.sqlc\\.go$"
@@ -32,7 +34,11 @@ issues:
         - dupl
         - gocyclo
         - gosec
-
+  exclude-dirs:
+    - data
+    - data/pgdata
+  exclude-files:
+    - data/pgdata/.*
 linters:
   disable-all: true
   enable:
