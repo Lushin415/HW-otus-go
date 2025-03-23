@@ -75,13 +75,27 @@ func (s *Server) DeleteCheapProductsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// Вызываем sqlc-функцию DeleteCheapProducts.
-	if err := s.queries.DeleteCheapProducts(context.Background(), threshold); err != nil {
+	// Предполагаем, что функция DeleteCheapProducts теперь возвращает количество удаленных строк
+	count, err := s.queries.DeleteCheapProducts(context.Background(), threshold)
+	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка удаления дешевых продуктов")
 		return
 	}
 
-	respondJSON(w, http.StatusOK, map[string]string{"message": "Дешевые продукты удалены"})
+	if count == 0 {
+		// Если ничего не удалено, отправляем сообщение "не найдено"
+		respondJSON(w, http.StatusOK, map[string]interface{}{
+			"message": "Продукты с ценой ниже указанного порога не найдены",
+			"count":   0,
+		})
+		return
+	}
+
+	// Если удаление прошло успешно, отправляем информацию о количестве удаленных продуктов
+	respondJSON(w, http.StatusOK, map[string]interface{}{
+		"message": "Дешевые продукты удалены",
+		"count":   count,
+	})
 }
 
 // GetProductsByPriceRangeHandler – обработчик для получения продуктов в заданном ценовом диапазоне.

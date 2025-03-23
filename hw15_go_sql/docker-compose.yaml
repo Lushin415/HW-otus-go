@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "qwerty123"
-      POSTGRES_DB: "db_Alex"
+      POSTGRES_DB: "db_alex"
       PGDATA: "/var/lib/postgresql/data/pgdata"
     ports:
       - "5433:5432"

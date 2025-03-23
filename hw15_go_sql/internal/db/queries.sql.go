@@ -83,13 +83,20 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, 
 	return id_user_main, err
 }
 
-const deleteCheapProducts = `-- name: DeleteCheapProducts :exec
-DELETE FROM schema.Products WHERE price < $1
+const deleteCheapProducts = `-- name: DeleteCheapProducts :one
+WITH deleted AS (
+DELETE FROM schema.Products
+WHERE price < $1
+    RETURNING id_product_main, name_product, price
+)
+SELECT count(*) FROM deleted
 `
 
-func (q *Queries) DeleteCheapProducts(ctx context.Context, price pgtype.Numeric) error {
-	_, err := q.db.Exec(ctx, deleteCheapProducts, price)
-	return err
+func (q *Queries) DeleteCheapProducts(ctx context.Context, price pgtype.Numeric) (int64, error) {
+	row := q.db.QueryRow(ctx, deleteCheapProducts, price)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const deleteOrder = `-- name: DeleteOrder :exec

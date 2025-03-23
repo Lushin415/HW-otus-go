@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/Lushin415/HW-otus-go/hw15_go_sql/internal/db"
 	"log"
+	"os"
 	"time"
 
 	"github.com/Lushin415/HW-otus-go/hw15_go_sql/internal/client"
+	"github.com/Lushin415/HW-otus-go/hw15_go_sql/internal/db"
 	"github.com/Lushin415/HW-otus-go/hw15_go_sql/internal/server"
 )
 
@@ -43,13 +44,12 @@ func run() error {
 	}
 	mainPool.Close()
 
-	//Подключаемся к базе db_alex
+	// Подключаемся к базе db_alex
 	dbConnection := "postgres://postgres:qwerty123@localhost:5433/db_alex?sslmode=disable"
 	pool, err := db.Connect(context.Background(), dbConnection)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer pool.Close()
 
 	// Создаем менеджер.
 	manager := db.NewManager(
@@ -61,9 +61,10 @@ func run() error {
 	// Затем выполнить скрипт (hw14_db_new.sql).
 	err = manager.ExecuteSQL(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Ошибка: %v", err)
+		os.Exit(1)
 	}
-
+	defer pool.Close()
 	// Создание и запуск сервера.
 	srv := server.NewServer(pool)
 	go srv.Start("0.0.0.0", "8080")

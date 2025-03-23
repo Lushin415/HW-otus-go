@@ -29,21 +29,21 @@ func (s *Server) Start(ip, port string) {
 
 	// Эндпоинты.
 	//Users.
-	mux.HandleFunc("/v1/user/create", s.CreateUserHandler)
-	mux.HandleFunc("/v1/user/delete", s.DeleteUserHandler)
-	mux.HandleFunc("/v1/user/spending_stats", s.GetUserSpendingStatsHandler)
-	mux.HandleFunc("/v1/user/get_by_password", s.GetUsersByPasswordHandler)
-	mux.HandleFunc("/v1/user/update_name", s.UpdateUserNameHandler)
+	mux.HandleFunc("/v1/user/create", s.CreateUserHandler)                   //v
+	mux.HandleFunc("/v1/user/delete", s.DeleteUserHandler)                   //v
+	mux.HandleFunc("/v1/user/spending_stats", s.GetUserSpendingStatsHandler) //v
+	mux.HandleFunc("/v1/user/get_by_password", s.GetUsersByPasswordHandler)  //v
+	mux.HandleFunc("/v1/user/update_name", s.UpdateUserNameHandler)          //v
 	//Products.
-	mux.HandleFunc("/v1/product/create", s.CreateProductHandler)
-	mux.HandleFunc("/v1/product/delete_cheap", s.DeleteCheapProductsHandler)
-	mux.HandleFunc("/v1/product/price_range", s.GetProductsByPriceRangeHandler)
-	mux.HandleFunc("/v1/product/update_price", s.UpdateProductPriceHandler)
+	mux.HandleFunc("/v1/product/create", s.CreateProductHandler)                //v
+	mux.HandleFunc("/v1/product/delete_cheap", s.DeleteCheapProductsHandler)    //v
+	mux.HandleFunc("/v1/product/price_range", s.GetProductsByPriceRangeHandler) //v
+	mux.HandleFunc("/v1/product/update_price", s.UpdateProductPriceHandler)     //v
 	//Orders.
-	mux.HandleFunc("/v1/order/create", s.CreateOrderHandler)
-	mux.HandleFunc("/v1/order/add_product", s.CreateOrderProductHandler)
-	mux.HandleFunc("/v1/order/delete", s.DeleteOrderHandler)
-	mux.HandleFunc("/v1/order/get_by_user", s.GetOrderByUserIDHandler)
+	mux.HandleFunc("/v1/order/create", s.CreateOrderHandler)             //v
+	mux.HandleFunc("/v1/order/add_product", s.CreateOrderProductHandler) //v
+	mux.HandleFunc("/v1/order/delete", s.DeleteOrderHandler)             //v
+	mux.HandleFunc("/v1/order/get_by_user", s.GetOrderByUserIDHandler)   //v
 	mux.HandleFunc("/v1/order/update_total", s.UpdateOrderTotalHandler)
 
 	server := &http.Server{

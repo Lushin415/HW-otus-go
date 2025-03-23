@@ -33,8 +33,13 @@ WHERE email = $2;
 -- name: DeleteUser :exec
 DELETE FROM schema.Users WHERE email = $1;
 
--- name: DeleteCheapProducts :exec
-DELETE FROM schema.Products WHERE price < $1;
+-- name: DeleteCheapProducts :one
+WITH deleted AS (
+DELETE FROM schema.Products
+WHERE price < $1
+    RETURNING *
+)
+SELECT count(*) FROM deleted;
 
 -- name: UpdateOrderTotal :exec
 UPDATE schema.Orders

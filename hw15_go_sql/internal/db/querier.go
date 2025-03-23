@@ -15,7 +15,7 @@ type Querier interface {
 	CreateOrderProduct(ctx context.Context, arg CreateOrderProductParams) error
 	CreateProduct(ctx context.Context, arg CreateProductParams) (int32, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (int32, error)
-	DeleteCheapProducts(ctx context.Context, price pgtype.Numeric) error
+	DeleteCheapProducts(ctx context.Context, price pgtype.Numeric) (int64, error)
 	DeleteOrder(ctx context.Context, idOrderMain int32) error
 	DeleteUser(ctx context.Context, email string) error
 	GetOrderByUserID(ctx context.Context, idUserF int32) ([]GetOrderByUserIDRow, error)
