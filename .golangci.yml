@@ -38,6 +38,11 @@ issues:
     - data
     - data/pgdata
   exclude-files:
+    - ".*_gen\\.go$"
+    - ".*\\.sql\\.go$"
+    - "querier\\.go$"
+    - "db\\.go$"
+    - "models\\.go$"
     - data/pgdata/.*
 linters:
   disable-all: true

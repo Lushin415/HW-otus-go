@@ -9,14 +9,14 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// Manager представляет собой объект для работы с базой данных
+// Manager представляет собой объект для работы с базой данных.
 type Manager struct {
 	pool        *pgxpool.Pool
 	dbName      string
 	sqlFilePath string
 }
 
-// NewManager создает новый экземпляр менеджера базы данных
+// NewManager создает новый экземпляр менеджера базы данных.
 func NewManager(pool *pgxpool.Pool, dbName, sqlFilePath string) *Manager {
 	return &Manager{
 		pool:        pool,
@@ -25,7 +25,7 @@ func NewManager(pool *pgxpool.Pool, dbName, sqlFilePath string) *Manager {
 	}
 }
 
-// Connect устанавливает соединение с базой данных
+// Connect устанавливает соединение с базой данных.
 func Connect(ctx context.Context, connectionString string) (*pgxpool.Pool, error) {
 	pool, err := pgxpool.New(ctx, connectionString)
 	if err != nil {
@@ -33,14 +33,14 @@ func Connect(ctx context.Context, connectionString string) (*pgxpool.Pool, error
 	}
 
 	// Проверка соединения
-	if err := pool.Ping(ctx); err != nil {
+	if err = pool.Ping(ctx); err != nil {
 		return nil, fmt.Errorf("ошибка проверки соединения с базой данных: %w", err)
 	}
 
 	return pool, nil
 }
 
-// ExecuteSQL выполняет SQL-скрипт из файла
+// ExecuteSQL выполняет SQL-скрипт из файла.
 func (m *Manager) ExecuteSQL(ctx context.Context) error {
 	// Читаем SQL-скрипт
 	sqlBytes, err := os.ReadFile(m.sqlFilePath)
@@ -66,7 +66,7 @@ func (m *Manager) ExecuteSQL(ctx context.Context) error {
 	return nil
 }
 
-// Close закрывает соединение с базой данных
+// Close закрывает соединение с базой данных.
 func (m *Manager) Close() {
 	if m.pool != nil {
 		m.pool.Close()

@@ -1,16 +1,17 @@
 package client
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/Lushin415/HW-otus-go/hw15_go_sql/internal/httputils"
 )
 
-// RunClient запускает клиентские тесты API
+// RunClient запускает клиентские тесты API.
 func RunClient() {
 	fmt.Println("Запуск клиентских тестов API...")
 
@@ -20,28 +21,28 @@ func RunClient() {
 	// Создаем продукты
 	createProducts()
 
-	//Создаем заказы
+	// Создаем заказы
 	createOrders()
 
-	//Создать сводную таблицу
+	// Создать сводную таблицу
 	createOrdersProduct()
 
-	//Удалить заказ
+	// Удалить заказ
 	deleteOrder()
 
-	//Удалить пользователя
+	// Удалить пользователя
 	deleteUser("jbanov@example.com")
 
 	// Обновляем цену продукта
 	updateProductPrice(5, 95.0)
 
-	//Обновить пользователя, установить новое имя, по email.
+	// Обновить пользователя, установить новое имя, по email.
 	updateUserName("jukova@example.com", "Екатерина Муравьева")
 
 	// Получаем пользователей с паролем "123"
 	getUsersByPassword("123")
 
-	//Удаляем продукты с ценой менее 50
+	// Удаляем продукты с ценой менее 50
 	deleteCheapProducts(50.0)
 
 	// Получаем продукты в ценовом диапазоне
@@ -50,14 +51,14 @@ func RunClient() {
 	// Получаем статистику пользователей
 	getUsersSpendingStats()
 
-	//Обновить таблицу заказов
+	// Обновить таблицу заказов
 	updateOrderTotal()
 
-	//Получаем заказы пользователя по ID
+	// Получаем заказы пользователя по ID
 	getOrdersByUserID(2)
 }
 
-//Создаем таблицу пользователей
+// Создаем таблицу пользователей
 
 func createUser() {
 	fmt.Println("\n--- Создание таблицы пользователей ---")
@@ -93,29 +94,9 @@ func createUser() {
 
 	// Отправляем пользователей по одному
 	for _, user := range userData {
-		jsonData, err := json.Marshal(user)
-		if err != nil {
-			fmt.Println("Ошибка кодирования JSON:", err)
-			continue
+		if err := httputils.SendData("http://localhost:8080/v1/user/create", user); err != nil {
+			fmt.Println("Ошибка при отправке данных пользователя:", err)
 		}
-		// Отправляем POST запрос
-		resp, err := http.Post("http://localhost:8080/v1/user/create",
-			"application/json", bytes.NewBuffer(jsonData))
-
-		if err != nil {
-			fmt.Println("Ошибка при отправке запроса:", err)
-			continue
-		}
-		defer resp.Body.Close()
-
-		// Читаем ответ сервера
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println("Ошибка чтения ответа:", err)
-			continue
-		}
-
-		fmt.Println("Ответ сервера:", string(body))
 	}
 }
 
@@ -150,29 +131,9 @@ func createProducts() {
 
 	// Отправляем каждый товар по отдельности
 	for _, product := range productData {
-		jsonData, err := json.Marshal(product)
-		if err != nil {
-			fmt.Println("Ошибка кодирования JSON:", err)
-			continue
+		if err := httputils.SendData("http://localhost:8080/v1/product/create", product); err != nil {
+			fmt.Println("Ошибка при отправке данных заказа:", err)
 		}
-		// Отправляем POST запрос
-		resp, err := http.Post("http://localhost:8080/v1/product/create",
-			"application/json", bytes.NewBuffer(jsonData))
-
-		if err != nil {
-			fmt.Println("Ошибка при отправке запроса:", err)
-			continue
-		}
-		defer resp.Body.Close()
-
-		// Читаем ответ
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println("Ошибка чтения ответа:", err)
-			continue
-		}
-
-		fmt.Println("Ответ сервера:", string(body))
 	}
 }
 
@@ -208,32 +169,10 @@ func createOrders() {
 		},
 	}
 
-	// Отправляем каждый заказ отдельно
 	for _, order := range orderData {
-		jsonData, err := json.Marshal(order)
-		if err != nil {
-			fmt.Println("Ошибка кодирования JSON:", err)
-			continue
+		if err := httputils.SendData("http://localhost:8080/v1/order/create", order); err != nil {
+			fmt.Println("Ошибка при отправке данных заказа:", err)
 		}
-
-		// Отправляем POST запрос
-		resp, err := http.Post("http://localhost:8080/v1/order/create",
-			"application/json", bytes.NewBuffer(jsonData))
-
-		if err != nil {
-			fmt.Println("Ошибка при отправке запроса:", err)
-			continue
-		}
-		defer resp.Body.Close()
-
-		// Читаем ответ
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println("Ошибка чтения ответа:", err)
-			continue
-		}
-
-		fmt.Println("Ответ сервера:", string(body))
 	}
 }
 
@@ -286,59 +225,18 @@ func createOrdersProduct() {
 
 	// Отправляем каждую запись отдельно
 	for _, item := range orderProductData {
-		jsonData, err := json.Marshal(item)
-		if err != nil {
-			fmt.Println("Ошибка кодирования JSON:", err)
-			continue
+		if err := httputils.SendData("http://localhost:8080/v1/order/add_product", item); err != nil {
+			fmt.Println("Ошибка при отправке данных товара в заказ:", err)
 		}
-
-		// Отправляем POST запрос
-		resp, err := http.Post("http://localhost:8080/v1/order/add_product",
-			"application/json", bytes.NewBuffer(jsonData))
-
-		if err != nil {
-			fmt.Println("Ошибка при отправке запроса:", err)
-			continue
-		}
-		defer resp.Body.Close()
-
-		// Читаем ответ
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println("Ошибка чтения ответа:", err)
-			continue
-		}
-
-		fmt.Println("Ответ сервера:", string(body))
 	}
 }
 
 func deleteOrder() {
 	fmt.Println("\n--- Удаление заказа ---")
 
-	// Формируем URL с параметром id=1
-	url := "http://localhost:8080/v1/order/delete?id=1"
-
-	// Создаем DELETE-запрос
-	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	body, err := httputils.ReadResponse(http.MethodDelete, "http://localhost:8080/v1/order/delete?id=1", nil)
 	if err != nil {
-		fmt.Println("Ошибка при создании запроса:", err)
-		return
-	}
-
-	// Выполняем запрос
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Читаем ответ
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Ошибка при чтении ответа:", err)
+		fmt.Println("Ошибка при удалении заказа:", err)
 		return
 	}
 
@@ -346,46 +244,44 @@ func deleteOrder() {
 	fmt.Println("Ответ сервера:", string(body))
 }
 
-// Получаем пользователей по паролю
+// Получаем пользователей по паролю.
 func getUsersByPassword(password string) {
 	fmt.Println("\n--- Получение пользователей с паролем ---")
 
-	// Отправляем GET-запрос
-	resp, err := http.Get("http://localhost:8080/v1/user/get_by_password?password=" + password)
+	// Формируем URL с параметром password
+	url := fmt.Sprintf("http://localhost:8080/v1/user/get_by_password?password=%s", password)
 
+	body, err := httputils.ReadResponse(http.MethodGet, url, nil)
 	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
+		fmt.Println("Ошибка при получении пользователей:", err)
 		return
 	}
-	defer resp.Body.Close()
 
-	// Читаем ответ
-	body, _ := io.ReadAll(resp.Body)
+	// Выводим ответ сервера
 	fmt.Println("Результат:", string(body))
 }
 
-// Получаем продукты в ценовом диапазоне
-func getProductsByPriceRange(min, max float64) {
+// Получаем продукты в ценовом диапазоне.
+func getProductsByPriceRange(minPrice, maxPrice float64) {
 	fmt.Println("\n--- Получение продуктов по ценовому диапазону ---")
 
 	// Формируем URL с параметрами
-	url := fmt.Sprintf("http://localhost:8080/v1/product/price_range?min=%.2f&max=%.2f", min, max)
+	url := fmt.Sprintf("http://localhost:8080/v1/product/price_range?minPrice=%.2f&maxPrice=%.2f",
+		minPrice, maxPrice)
+	// #nosec G107 - URL строится только из доверенных компонентов.
 
-	// Отправляем GET-запрос
-	resp, err := http.Get(url)
-
+	// Используем readResponse вместо прямого вызова http_GET
+	body, err := httputils.ReadResponse(http.MethodGet, url, nil)
 	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
+		fmt.Println("Ошибка при получении продуктов:", err)
 		return
 	}
-	defer resp.Body.Close()
 
-	// Читаем ответ
-	body, _ := io.ReadAll(resp.Body)
+	// Выводим результат
 	fmt.Println("Продукты в диапазоне:", string(body))
 }
 
-// Обновляем цену продукта
+// Обновляем цену продукта.
 func updateProductPrice(productID int, newPrice float64) {
 	fmt.Println("\n--- Обновление цены продукта ---")
 
@@ -395,50 +291,35 @@ func updateProductPrice(productID int, newPrice float64) {
 		"price":           fmt.Sprintf("%.2f", newPrice),
 	}
 
-	// Кодируем данные в JSON
-	jsonData, _ := json.Marshal(updateData)
-
-	// Создаем PUT-запрос
-	req, _ := http.NewRequest(http.MethodPut,
+	// Отправляем PUT-запрос
+	body, err := httputils.ReadResponse(http.MethodPut,
 		"http://localhost:8080/v1/product/update_price",
-		bytes.NewBuffer(jsonData))
-
-	req.Header.Set("Content-Type", "application/json")
-
-	// Отправляем запрос
-	client := &http.Client{}
-	resp, err := client.Do(req)
-
+		updateData)
 	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
+		fmt.Println("Ошибка при обновлении цены продукта:", err)
 		return
 	}
-	defer resp.Body.Close()
 
-	// Читаем ответ
-	body, _ := io.ReadAll(resp.Body)
+	// Выводим результат
 	fmt.Println("Результат обновления:", string(body))
 }
 
-// Получаем статистику пользователей
+// Получаем статистику пользователей.
 func getUsersSpendingStats() {
 	fmt.Println("\n--- Получение статистики пользователей ---")
 
-	// Отправляем GET-запрос
-	resp, err := http.Get("http://localhost:8080/v1/user/spending_stats")
-
+	// GET-запрос
+	body, err := httputils.ReadResponse(http.MethodGet, "http://localhost:8080/v1/user/spending_stats", nil)
 	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
+		fmt.Println("Ошибка при получении статистики пользователей:", err)
 		return
 	}
-	defer resp.Body.Close()
 
-	// Читаем ответ
-	body, _ := io.ReadAll(resp.Body)
+	// Выводим результат
 	fmt.Println("Статистика пользователей:", string(body))
 }
 
-// Обновляем имя пользователя по email
+// Обновляем имя пользователя по email.
 func updateUserName(email string, newName string) {
 	fmt.Println("\n--- Обновление имени пользователя ---")
 
@@ -448,37 +329,10 @@ func updateUserName(email string, newName string) {
 		"name_user": newName,
 	}
 
-	// Кодируем данные в JSON
-	jsonData, err := json.Marshal(updateData)
+	// Используем readResponse для отправки PUT-запроса с данными
+	body, err := httputils.ReadResponse(http.MethodPut, "http://localhost:8080/v1/user/update_name", updateData)
 	if err != nil {
-		fmt.Println("Ошибка кодирования JSON:", err)
-		return
-	}
-
-	// Создаем PUT-запрос
-	req, err := http.NewRequest(http.MethodPut,
-		"http://localhost:8080/v1/user/update_name",
-		bytes.NewBuffer(jsonData))
-	if err != nil {
-		fmt.Println("Ошибка создания запроса:", err)
-		return
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	// Отправляем запрос
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Читаем ответ
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Ошибка чтения ответа:", err)
+		fmt.Println("Ошибка при обновлении имени пользователя:", err)
 		return
 	}
 
@@ -486,33 +340,17 @@ func updateUserName(email string, newName string) {
 	fmt.Println("Ответ сервера:", string(body))
 }
 
-// Удаляем пользователя по email
+// Удаляем пользователя по email.
 func deleteUser(email string) {
 	fmt.Println("\n--- Удаление пользователя ---")
 
 	// Формируем URL с параметром email
 	url := fmt.Sprintf("http://localhost:8080/v1/user/delete?email=%s", url.QueryEscape(email))
 
-	// Создаем DELETE-запрос
-	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	// Используем readResponse для отправки DELETE-запроса
+	body, err := httputils.ReadResponse(http.MethodDelete, url, nil)
 	if err != nil {
-		fmt.Println("Ошибка при создании запроса:", err)
-		return
-	}
-
-	// Выполняем запрос
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Читаем ответ
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Ошибка при чтении ответа:", err)
+		fmt.Println("Ошибка при удалении пользователя:", err)
 		return
 	}
 
@@ -520,39 +358,23 @@ func deleteUser(email string) {
 	fmt.Println("Ответ сервера:", string(body))
 }
 
-// Удаляем дешевые продукты с ценой ниже порогового значения
+// Удаляем дешевые продукты с ценой ниже порогового значения.
 func deleteCheapProducts(thresholdPrice float64) {
 	fmt.Println("\n--- Удаление дешевых продуктов ---")
 
 	// Формируем URL с параметром price
 	url := fmt.Sprintf("http://localhost:8080/v1/product/delete_cheap?price=%.2f", thresholdPrice)
 
-	// Создаем DELETE-запрос
-	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	// Используем readResponse для отправки DELETE-запроса
+	body, err := httputils.ReadResponse(http.MethodDelete, url, nil)
 	if err != nil {
-		fmt.Println("Ошибка при создании запроса:", err)
+		fmt.Println("Ошибка при удалении дешевых продуктов:", err)
 		return
 	}
 
-	// Выполняем запрос
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Читаем ответ
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Ошибка при чтении ответа:", err)
-		return
-	}
-
-	// Парсим ответ
+	// Парсинг ответа
 	var response map[string]interface{}
-	if err := json.Unmarshal(body, &response); err != nil {
+	if err = json.Unmarshal(body, &response); err != nil {
 		fmt.Println("Ошибка при разборе ответа:", err)
 		return
 	}
@@ -566,22 +388,23 @@ func deleteCheapProducts(thresholdPrice float64) {
 	}
 }
 
-// Получаем заказы пользователя по ID
+// Получаем заказы пользователя по ID.
 func getOrdersByUserID(userID int) {
 	fmt.Println("\n--- Получение заказов пользователя ---")
 
 	// Формируем URL с параметром id_user_f
 	url := fmt.Sprintf("http://localhost:8080/v1/order/get_by_user?id_user_f=%d", userID)
+	// #nosec G107 - URL строится только из доверенных компонентов.
 
-	// Отправляем GET-запрос
-	resp, err := http.Get(url)
+	// Получаем ответ через sendJSONRequest, чтобы иметь доступ к статус-коду
+	resp, err := httputils.SendJSONRequest(http.MethodGet, url, nil)
 	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
+		fmt.Println("Ошибка при получении заказов пользователя:", err)
 		return
 	}
 	defer resp.Body.Close()
 
-	// Читаем ответ
+	// Читаем тело ответа
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Ошибка при чтении ответа:", err)
@@ -591,7 +414,7 @@ func getOrdersByUserID(userID int) {
 	// Если код ответа не OK, выводим ошибку
 	if resp.StatusCode != http.StatusOK {
 		var errorResponse map[string]string
-		if err := json.Unmarshal(body, &errorResponse); err == nil {
+		if err = json.Unmarshal(body, &errorResponse); err == nil {
 			fmt.Println("Ошибка:", errorResponse["error"])
 		} else {
 			fmt.Println("Ошибка при получении заказов. Код ответа:", resp.StatusCode)
@@ -599,9 +422,9 @@ func getOrdersByUserID(userID int) {
 		return
 	}
 
-	// Пытаемся распарсить JSON с заказами
+	// Парсинг JSON с заказами
 	var orders []map[string]interface{}
-	if err := json.Unmarshal(body, &orders); err != nil {
+	if err = json.Unmarshal(body, &orders); err != nil {
 		fmt.Println("Ошибка при разборе JSON:", err)
 		return
 	}
@@ -626,25 +449,14 @@ func getOrdersByUserID(userID int) {
 	}
 }
 
-// Обновляем итоговую сумму заказа
+// Обновляем итоговую сумму заказа.
 func updateOrderTotal() {
 	fmt.Println("\n--- Обновление итоговых сумм заказов ---")
 
-	// Создаем PUT-запрос без тела, так как обработчик не ожидает параметров
-	req, err := http.NewRequest(http.MethodPut, "http://localhost:8080/v1/order/update_total", nil)
+	// Используем sendJSONRequest для отправки PUT-запроса без тела
+	resp, err := httputils.SendJSONRequest(http.MethodPut, "http://localhost:8080/v1/order/update_total", nil)
 	if err != nil {
-		fmt.Println("Ошибка при создании запроса:", err)
-		return
-	}
-
-	// Устанавливаем заголовок Content-Type, хотя тело запроса пустое
-	req.Header.Set("Content-Type", "application/json")
-
-	// Отправляем запрос
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
+		fmt.Println("Ошибка при обновлении итоговых сумм заказов:", err)
 		return
 	}
 	defer resp.Body.Close()
