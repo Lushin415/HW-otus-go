@@ -18,9 +18,9 @@ VALUES ($1, $2, $3)
 `
 
 type CreateOrderParams struct {
-	IDUserF     int32          `json:"id_user_f"`
-	OrderDate   pgtype.Date    `json:"order_date"`
-	TotalAmount pgtype.Numeric `json:"total_amount"`
+	IDUserF     int32          `json:"idUserF"`
+	OrderDate   pgtype.Date    `json:"orderDate"`
+	TotalAmount pgtype.Numeric `json:"totalAmount"`
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (int32, error) {
@@ -36,8 +36,8 @@ VALUES ($1, $2, $3)
 `
 
 type CreateOrderProductParams struct {
-	IDOrderF   int32 `json:"id_order_f"`
-	IDProductF int32 `json:"id_product_f"`
+	IDOrderF   int32 `json:"idOrderF"`
+	IDProductF int32 `json:"idProductF"`
 	Quantity   int32 `json:"quantity"`
 }
 
@@ -53,7 +53,7 @@ VALUES ($1, $2)
 `
 
 type CreateProductParams struct {
-	NameProduct string         `json:"name_product"`
+	NameProduct string         `json:"nameProduct"`
 	Price       pgtype.Numeric `json:"price"`
 }
 
@@ -71,7 +71,7 @@ VALUES ($1, $2, $3)
 `
 
 type CreateUserParams struct {
-	NameUser string `json:"name_user"`
+	NameUser string `json:"nameUser"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -124,9 +124,9 @@ WHERE id_user_f = $1
 `
 
 type GetOrderByUserIDRow struct {
-	IDOrderMain int32          `json:"id_order_main"`
-	OrderDate   pgtype.Date    `json:"order_date"`
-	TotalAmount pgtype.Numeric `json:"total_amount"`
+	IDOrderMain int32          `json:"idOrderMain"`
+	OrderDate   pgtype.Date    `json:"orderDate"`
+	TotalAmount pgtype.Numeric `json:"totalAmount"`
 }
 
 func (q *Queries) GetOrderByUserID(ctx context.Context, idUserF int32) ([]GetOrderByUserIDRow, error) {
@@ -155,7 +155,7 @@ SELECT id_product_main, name_product, price FROM schema.Products WHERE price BET
 
 type GetProductsByPriceRangeParams struct {
 	Price   pgtype.Numeric `json:"price"`
-	Price_2 pgtype.Numeric `json:"price_2"`
+	Price_2 pgtype.Numeric `json:"price2"`
 }
 
 func (q *Queries) GetProductsByPriceRange(ctx context.Context, arg GetProductsByPriceRangeParams) ([]SchemaProduct, error) {
@@ -191,9 +191,9 @@ GROUP BY u.name_user
 `
 
 type GetUserSpendingStatsRow struct {
-	NameUser        string      `json:"name_user"`
-	TotalSpent      interface{} `json:"total_spent"`
-	AvgProductPrice interface{} `json:"avg_product_price"`
+	NameUser        string      `json:"nameUser"`
+	TotalSpent      interface{} `json:"totalSpent"`
+	AvgProductPrice interface{} `json:"avgProductPrice"`
 }
 
 func (q *Queries) GetUserSpendingStats(ctx context.Context) ([]GetUserSpendingStatsRow, error) {
@@ -268,7 +268,7 @@ WHERE id_product_main = $2
 
 type UpdateProductPriceParams struct {
 	Price         pgtype.Numeric `json:"price"`
-	IDProductMain int32          `json:"id_product_main"`
+	IDProductMain int32          `json:"idProductMain"`
 }
 
 func (q *Queries) UpdateProductPrice(ctx context.Context, arg UpdateProductPriceParams) error {
@@ -283,7 +283,7 @@ WHERE email = $2
 `
 
 type UpdateUserNameParams struct {
-	NameUser string `json:"name_user"`
+	NameUser string `json:"nameUser"`
 	Email    string `json:"email"`
 }
 

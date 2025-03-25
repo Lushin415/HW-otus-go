@@ -9,27 +9,27 @@ import (
 )
 
 type SchemaOrder struct {
-	IDOrderMain int32          `json:"id_order_main"`
-	IDUserF     int32          `json:"id_user_f"`
-	OrderDate   pgtype.Date    `json:"order_date"`
-	TotalAmount pgtype.Numeric `json:"total_amount"`
+	IDOrderMain int32          `json:"idOrderMain"`
+	IDUserF     int32          `json:"idUserF"`
+	OrderDate   pgtype.Date    `json:"orderDate"`
+	TotalAmount pgtype.Numeric `json:"totalAmount"`
 }
 
 type SchemaOrderProduct struct {
-	IDOrderF   int32 `json:"id_order_f"`
-	IDProductF int32 `json:"id_product_f"`
+	IDOrderF   int32 `json:"idOrderF"`
+	IDProductF int32 `json:"idProductF"`
 	Quantity   int32 `json:"quantity"`
 }
 
 type SchemaProduct struct {
-	IDProductMain int32          `json:"id_product_main"`
-	NameProduct   string         `json:"name_product"`
+	IDProductMain int32          `json:"idProductMain"`
+	NameProduct   string         `json:"nameProduct"`
 	Price         pgtype.Numeric `json:"price"`
 }
 
 type SchemaUser struct {
-	IDUserMain int32  `json:"id_user_main"`
-	NameUser   string `json:"name_user"`
+	IDUserMain int32  `json:"idUserMain"`
+	NameUser   string `json:"nameUser"`
 	Email      string `json:"email"`
 	Password   string `json:"password"`
 }
