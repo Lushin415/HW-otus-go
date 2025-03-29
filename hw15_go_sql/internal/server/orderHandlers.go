@@ -21,7 +21,7 @@ func (s *Server) CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Данные из запроса
 	var input struct {
-		IDUserF     int32  `json:"IDUserF"`
+		IDUserF     int32  `json:"idUserF"`
 		OrderDate   string `json:"orderDate"`   // Ожидается формат "YYYY-MM-DD"
 		TotalAmount string `json:"totalAmount"` // Строка, которую можно установить в pgtype.Numeric
 	}
