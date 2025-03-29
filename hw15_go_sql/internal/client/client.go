@@ -66,29 +66,29 @@ func createUser() {
 	// Данные для создания пользователя
 	userData := []map[string]interface{}{
 		{
-			"name_user": "Иван Иванов",
-			"email":     "ivan@example.com",
-			"password":  "qwerty",
+			"nameUser": "Иван Иванов",
+			"email":    "ivan@example.com",
+			"password": "qwerty",
 		},
 		{
-			"name_user": "Петя Смирнов",
-			"email":     "petr@example.com",
-			"password":  "123",
+			"nameUser": "Петя Смирнов",
+			"email":    "petr@example.com",
+			"password": "123",
 		},
 		{
-			"name_user": "Женя Жбанов",
-			"email":     "jbanov@example.com",
-			"password":  "123",
+			"nameUser": "Женя Жбанов",
+			"email":    "jbanov@example.com",
+			"password": "123",
 		},
 		{
-			"name_user": "Катя Жукова",
-			"email":     "jukova@example.com",
-			"password":  "456",
+			"nameUser": "Катя Жукова",
+			"email":    "jukova@example.com",
+			"password": "456",
 		},
 		{
-			"name_user": "Аня Гавриленко",
-			"email":     "gavrilenko@example.com",
-			"password":  "456",
+			"nameUser": "Аня Гавриленко",
+			"email":    "gavrilenko@example.com",
+			"password": "456",
 		},
 	}
 
@@ -108,24 +108,24 @@ func createProducts() {
 	// Данные для создания товаров
 	productData := []map[string]interface{}{
 		{
-			"name_product": "Носки",
-			"price":        "10.00",
+			"nameProduct": "Носки",
+			"price":       "10.00",
 		},
 		{
-			"name_product": "Ботинки",
-			"price":        "120.00",
+			"nameProduct": "Ботинки",
+			"price":       "120.00",
 		},
 		{
-			"name_product": "Калоши",
-			"price":        "50.00",
+			"nameProduct": "Калоши",
+			"price":       "50.00",
 		},
 		{
-			"name_product": "Сандали",
-			"price":        "70.00",
+			"nameProduct": "Сандали",
+			"price":       "70.00",
 		},
 		{
-			"name_product": "Туфли",
-			"price":        "90.00",
+			"nameProduct": "Туфли",
+			"price":       "90.00",
 		},
 	}
 
@@ -143,29 +143,29 @@ func createOrders() {
 	// Данные для создания ордеров
 	orderData := []map[string]interface{}{
 		{
-			"id_user_f":    1,
-			"order_date":   "2025-02-25",
-			"total_amount": "0.00",
+			"idUserF":     1,
+			"orderDate":   "2025-02-25",
+			"totalAmount": "0.00",
 		},
 		{
-			"id_user_f":    2,
-			"order_date":   "2025-02-25",
-			"total_amount": "0.00",
+			"idUserF":     2,
+			"orderDate":   "2025-02-25",
+			"totalAmount": "0.00",
 		},
 		{
-			"id_user_f":    3,
-			"order_date":   "2025-02-25",
-			"total_amount": "0.00",
+			"idUserF":     3,
+			"orderDate":   "2025-02-25",
+			"totalAmount": "0.00",
 		},
 		{
-			"id_user_f":    4,
-			"order_date":   "2025-02-25",
-			"total_amount": "0.00",
+			"idUserF":     4,
+			"orderDate":   "2025-02-25",
+			"totalAmount": "0.00",
 		},
 		{
-			"id_user_f":    5,
-			"order_date":   "2025-02-25",
-			"total_amount": "0.00",
+			"idUserF":     5,
+			"orderDate":   "2025-02-25",
+			"totalAmount": "0.00",
 		},
 	}
 
@@ -182,44 +182,44 @@ func createOrdersProduct() {
 	// Данные для создания ордеров
 	orderProductData := []map[string]interface{}{
 		{
-			"id_order_f":   1,
-			"id_product_f": 1,
-			"quantity":     1,
+			"idOrderF":   1,
+			"idProductF": 1,
+			"quantity":   1,
 		},
 		{
-			"id_order_f":   1,
-			"id_product_f": 2,
-			"quantity":     2,
+			"idOrderF":   1,
+			"idProductF": 2,
+			"quantity":   2,
 		},
 		{
-			"id_order_f":   2,
-			"id_product_f": 4,
-			"quantity":     3,
+			"idOrderF":   2,
+			"idProductF": 4,
+			"quantity":   3,
 		},
 		{
-			"id_order_f":   2,
-			"id_product_f": 5,
-			"quantity":     1,
+			"idOrderF":   2,
+			"idProductF": 5,
+			"quantity":   1,
 		},
 		{
-			"id_order_f":   3,
-			"id_product_f": 1,
-			"quantity":     5,
+			"idOrderF":   3,
+			"idProductF": 1,
+			"quantity":   5,
 		},
 		{
-			"id_order_f":   4,
-			"id_product_f": 5,
-			"quantity":     1,
+			"idOrderF":   4,
+			"idProductF": 5,
+			"quantity":   1,
 		},
 		{
-			"id_order_f":   5,
-			"id_product_f": 5,
-			"quantity":     3,
+			"idOrderF":   5,
+			"idProductF": 5,
+			"quantity":   3,
 		},
 		{
-			"id_order_f":   5,
-			"id_product_f": 1,
-			"quantity":     1,
+			"idOrderF":   5,
+			"idProductF": 1,
+			"quantity":   1,
 		},
 	}
 
@@ -287,8 +287,8 @@ func updateProductPrice(productID int, newPrice float64) {
 
 	// Данные для обновления цены
 	updateData := map[string]interface{}{
-		"id_product_main": productID,
-		"price":           fmt.Sprintf("%.2f", newPrice),
+		"idProductMain": productID,
+		"price":         fmt.Sprintf("%.2f", newPrice),
 	}
 
 	// Отправляем PUT-запрос
@@ -325,8 +325,8 @@ func updateUserName(email string, newName string) {
 
 	// Данные для обновления имени
 	updateData := map[string]interface{}{
-		"email":     email,
-		"name_user": newName,
+		"email":    email,
+		"nameUser": newName,
 	}
 
 	// Используем readResponse для отправки PUT-запроса с данными
@@ -392,8 +392,8 @@ func deleteCheapProducts(thresholdPrice float64) {
 func getOrdersByUserID(userID int) {
 	fmt.Println("\n--- Получение заказов пользователя ---")
 
-	// Формируем URL с параметром id_user_f
-	url := fmt.Sprintf("http://localhost:8080/v1/order/get_by_user?id_user_f=%d", userID)
+	// Формируем URL с параметром idUserF
+	url := fmt.Sprintf("http://localhost:8080/v1/order/get_by_user?idUserF=%d", userID)
 	// #nosec G107 - URL строится только из доверенных компонентов.
 
 	// Получаем ответ через sendJSONRequest, чтобы иметь доступ к статус-коду
@@ -441,9 +441,9 @@ func getOrdersByUserID(userID int) {
 	fmt.Println(strings.Repeat("-", 50))
 
 	for _, order := range orders {
-		orderID := fmt.Sprintf("%.0f", order["id_order_main"].(float64))
-		orderDate := order["order_date"]
-		totalAmount := order["total_amount"]
+		orderID := fmt.Sprintf("%.0f", order["idOrderMain"].(float64))
+		orderDate := order["orderDate"]
+		totalAmount := order["totalAmount"]
 
 		fmt.Printf("%-15s | %-15v | %v\n", orderID, orderDate, totalAmount)
 	}

@@ -21,9 +21,9 @@ func (s *Server) CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Данные из запроса
 	var input struct {
-		IDUserF     int32  `json:"id_user_f"`
-		OrderDate   string `json:"order_date"`   // Ожидается формат "YYYY-MM-DD"
-		TotalAmount string `json:"total_amount"` // Строка, которую можно установить в pgtype.Numeric
+		IDUserF     int32  `json:"IDUserF"`
+		OrderDate   string `json:"orderDate"`   // Ожидается формат "YYYY-MM-DD"
+		TotalAmount string `json:"totalAmount"` // Строка, которую можно установить в pgtype.Numeric
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -59,8 +59,8 @@ func (s *Server) CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondJSON(w, http.StatusCreated, map[string]interface{}{
-		"id_order_main": orderID,
-		"message":       "Заказ создан",
+		"idOrderMain": orderID,
+		"message":     "Заказ создан",
 	})
 }
 
@@ -122,7 +122,7 @@ func (s *Server) GetOrderByUserIDHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	idStr := r.URL.Query().Get("id_user_f")
+	idStr := r.URL.Query().Get("idUserF")
 	if idStr == "" {
 		respondError(w, http.StatusBadRequest, "ID пользователя не указан")
 		return

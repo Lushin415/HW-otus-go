@@ -20,7 +20,7 @@ func (s *Server) CreateProductHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Декодируем JSON-тело запроса.
 	var input struct {
-		NameProduct string `json:"name_product"`
+		NameProduct string `json:"nameProduct"`
 		Price       string `json:"price"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -49,8 +49,8 @@ func (s *Server) CreateProductHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondJSON(w, http.StatusCreated, map[string]interface{}{
-		"id_product_main": productID,
-		"message":         "Продукт создан",
+		"idProductMain": productID,
+		"message":       "Продукт создан",
 	})
 }
 
@@ -106,8 +106,8 @@ func (s *Server) GetProductsByPriceRangeHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	minStr := r.URL.Query().Get("min")
-	maxStr := r.URL.Query().Get("max")
+	minStr := r.URL.Query().Get("minPrice")
+	maxStr := r.URL.Query().Get("maxPrice")
 	if minStr == "" || maxStr == "" {
 		respondError(w, http.StatusBadRequest, "Укажите min и max")
 		return
@@ -149,7 +149,7 @@ func (s *Server) UpdateProductPriceHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	var input struct {
-		IDProductMain int32  `json:"id_product_main"`
+		IDProductMain int32  `json:"idProductMain"`
 		Price         string `json:"price"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
