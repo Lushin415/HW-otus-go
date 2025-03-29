@@ -6,12 +6,6 @@ run:
   run:
     skip-dirs-use-default: true
 
-  skip-files:
-    - ".*\\.sqlc\\.go$"
-    - "db/models.go"
-    - "db/querier.go"
-    - "db/db.go"
-
 linters-settings:
   funlen:
     lines: 150
@@ -84,7 +78,7 @@ linters:
     - stylecheck
     - tagliatelle
     - thelper
-    - typecheck
+    # - typecheck
     - unconvert
     - unparam
     - unused

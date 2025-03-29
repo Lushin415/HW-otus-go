@@ -100,13 +100,15 @@ func (s *Server) DeleteOrderHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusBadRequest, "ID заказа не указан")
 		return
 	}
-	orderID, err := strconv.Atoi(idStr)
+
+	// Используем ParseInt с битностью 32 для безопасного преобразования
+	orderID, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, "Некорректный ID заказа")
 		return
 	}
 
-	if err := s.queries.DeleteOrder(context.Background(), int32(orderID)); err != nil {
+	if err = s.queries.DeleteOrder(context.Background(), int32(orderID)); err != nil {
 		respondError(w, http.StatusInternalServerError, "Ошибка удаления заказа")
 		return
 	}
@@ -127,7 +129,9 @@ func (s *Server) GetOrderByUserIDHandler(w http.ResponseWriter, r *http.Request)
 		respondError(w, http.StatusBadRequest, "ID пользователя не указан")
 		return
 	}
-	userID, err := strconv.Atoi(idStr)
+
+	// Используем ParseInt с битностью 32 для безопасного преобразования
+	userID, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, "Некорректный ID пользователя")
 		return
