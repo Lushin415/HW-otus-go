@@ -3,6 +3,8 @@ run:
   build-tags:
     - bench
     - !bench
+  run:
+    skip-dirs-use-default: true
 
 linters-settings:
   funlen:
@@ -26,7 +28,16 @@ issues:
         - dupl
         - gocyclo
         - gosec
-
+  exclude-dirs:
+    - data
+    - data/pgdata
+  exclude-files:
+    - ".*_gen\\.go$"
+    - ".*\\.sql\\.go$"
+    - "querier\\.go$"
+    - "db\\.go$"
+    - "models\\.go$"
+    - data/pgdata/.*
 linters:
   disable-all: true
   enable:
@@ -37,7 +48,6 @@ linters:
     - durationcheck
     - errorlint
     - exhaustive
-    - exportloopref
     - funlen
     - gci
     - gocognit
@@ -68,7 +78,7 @@ linters:
     - stylecheck
     - tagliatelle
     - thelper
-    - typecheck
+    # - typecheck
     - unconvert
     - unparam
     - unused
