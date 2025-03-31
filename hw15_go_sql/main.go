@@ -20,7 +20,7 @@ func main() {
 
 func run() error {
 	// Подключаемся к ОСНОВНОЙ базе данных.
-	connectionString := "postgres://postgres:qwerty123@localhost:5433/postgres?sslmode=disable"
+	connectionString := "postgres://postgres:qwerty123@postgres-chat:5432/postgres?sslmode=disable"
 	mainPool, err := db.Connect(context.Background(), connectionString)
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +45,7 @@ func run() error {
 	mainPool.Close()
 
 	// Подключаемся к базе db_alex
-	dbConnection := "postgres://postgres:qwerty123@localhost:5433/db_alex?sslmode=disable"
+	dbConnection := "postgres://postgres:qwerty123@postgres-chat:5432/db_alex?sslmode=disable"
 	pool, err := db.Connect(context.Background(), dbConnection)
 	if err != nil {
 		log.Fatal(err)

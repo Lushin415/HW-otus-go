@@ -3,7 +3,7 @@
 --2. Создать БД
 --CREATE DATABASE db_alex;
 --3. Удалить Схему
-DROP SCHEMA schema CASCADE ;
+--DROP SCHEMA schema CASCADE ;
 -- 4. Создать схему
 CREATE SCHEMA schema;
 --5. Создать таблицу Users
