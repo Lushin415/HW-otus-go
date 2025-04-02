@@ -83,3 +83,4 @@ linters:
     - unparam
     - unused
     - whitespace
+    - exportloopref
